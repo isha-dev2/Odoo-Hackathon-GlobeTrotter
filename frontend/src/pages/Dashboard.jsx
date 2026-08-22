@@ -148,39 +148,6 @@ export default function Dashboard({
               </button>
             </div>
           </div>
-
-          {/* Action Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '200px' }}>
-            <button
-              onClick={onToggleAiAgent}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-                color: '#ffffff', border: 'none', borderRadius: '14px',
-                padding: '14px 22px', fontSize: '14px', fontWeight: 800,
-                cursor: 'pointer', boxShadow: '0 6px 20px rgba(124, 58, 237, 0.45)',
-                transition: 'transform 0.15s ease'
-              }}
-            >
-              <Sparkles size={17} />
-              <span>Generate with AI</span>
-            </button>
-
-            <button
-              onClick={onOpenCreateTrip}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
-                color: '#ffffff', border: 'none', borderRadius: '14px',
-                padding: '14px 22px', fontSize: '14px', fontWeight: 800,
-                cursor: 'pointer', boxShadow: '0 6px 20px rgba(13, 148, 136, 0.45)',
-                transition: 'transform 0.15s ease'
-              }}
-            >
-              <Plus size={18} strokeWidth={2.5} />
-              <span>Create Custom Trip</span>
-            </button>
-          </div>
         </div>
       </div>
 

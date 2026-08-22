@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import {
   Globe, Plus, Sparkles, Map, LayoutDashboard, List,
   Compass, Activity, Wallet, Calendar, Share2, User,
-  Shield, ChevronDown, LogIn, X, Menu, Users, ExternalLink,
-  Sun, Moon, MapPin
+  Shield, ChevronDown, LogIn, X, Users, MapPin
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -36,7 +35,6 @@ export default function Navbar({
   setIsDarkMode,
   onExportTrip,
 }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showTripPicker, setShowTripPicker] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -85,7 +83,7 @@ export default function Navbar({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {selectedTrip && (
-            <span style={{ color: '#d1fae5', display: 'none' }} className="md:inline">
+            <span style={{ color: '#d1fae5' }}>
               Editing: <strong style={{ color: '#ffffff' }}>{selectedTrip.name}</strong>
             </span>
           )}
@@ -109,10 +107,10 @@ export default function Navbar({
 
       {/* Main Navigation Header */}
       <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', height: '68px', gap: '16px', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: '64px', gap: '14px', justifyContent: 'space-between' }}>
           
           {/* Logo & Brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
             <button
               onClick={() => setActiveTab('dashboard')}
               style={{
@@ -121,18 +119,18 @@ export default function Navbar({
               }}
             >
               <div style={{
-                width: '42px', height: '42px', borderRadius: '12px',
+                width: '38px', height: '38px', borderRadius: '10px',
                 background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 4px 14px rgba(13,148,136,0.35)'
+                boxShadow: '0 4px 12px rgba(13,148,136,0.35)'
               }}>
-                <Globe size={22} color="white" strokeWidth={2.5} />
+                <Globe size={20} color="white" strokeWidth={2.5} />
               </div>
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
+                <div style={{ fontSize: '17px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
                   GlobeTrotter
                 </div>
-                <div style={{ fontSize: '10px', color: '#0d9488', fontWeight: 800, letterSpacing: '0.08em', marginTop: '2px' }}>
+                <div style={{ fontSize: '9px', color: '#0d9488', fontWeight: 800, letterSpacing: '0.08em', marginTop: '2px' }}>
                   TRAVEL PLANNER
                 </div>
               </div>
@@ -140,22 +138,22 @@ export default function Navbar({
 
             {/* Quick Trip Selector Dropdown */}
             {trips.length > 0 && (
-              <div style={{ position: 'relative', display: 'none' }} className="lg:block">
+              <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setShowTripPicker(!showTripPicker)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '6px 12px', borderRadius: '10px',
+                    padding: '6px 10px', borderRadius: '10px',
                     border: '1.5px solid #e2e8f0', background: '#f8fafc',
-                    fontSize: '12px', fontWeight: 700, color: '#334155',
-                    cursor: 'pointer', maxWidth: '180px'
+                    fontSize: '11px', fontWeight: 700, color: '#334155',
+                    cursor: 'pointer', maxWidth: '160px'
                   }}
                 >
-                  <MapPin size={13} color="#0d9488" />
+                  <MapPin size={12} color="#0d9488" />
                   <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {selectedTrip ? selectedTrip.name : 'Select Trip'}
                   </span>
-                  <ChevronDown size={12} color="#64748b" />
+                  <ChevronDown size={11} color="#64748b" />
                 </button>
 
                 {showTripPicker && (
@@ -205,17 +203,19 @@ export default function Navbar({
             )}
           </div>
 
-          {/* Desktop Center Navigation Bar with Clear Readable Text & Icons */}
+          {/* Center Navigation Bar — Sleek, High-Contrast, All 11 Tabs Visible */}
           <nav style={{
-            display: 'none',
+            display: 'flex',
             alignItems: 'center',
-            gap: '4px',
+            gap: '2px',
             background: '#f8fafc',
-            padding: '5px',
-            borderRadius: '14px',
+            padding: '3px 6px',
+            borderRadius: '12px',
             border: '1px solid #e2e8f0',
+            flex: 1,
+            justifyContent: 'center',
             overflowX: 'auto'
-          }} className="md:flex">
+          }}>
             {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
               const isActive = activeTab === id;
               return (
@@ -223,20 +223,20 @@ export default function Navbar({
                   key={id}
                   onClick={() => setActiveTab(id)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '8px 12px',
-                    borderRadius: '10px',
-                    fontSize: '12px',
+                    display: 'flex', alignItems: 'center', gap: '4px',
+                    padding: '6px 8px',
+                    borderRadius: '8px',
+                    fontSize: '11px',
                     fontWeight: isActive ? 800 : 600,
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'all 0.15s ease',
                     background: isActive ? 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)' : 'transparent',
                     color: isActive ? '#ffffff' : '#475569',
-                    boxShadow: isActive ? '0 4px 12px rgba(13,148,136,0.3)' : 'none',
+                    boxShadow: isActive ? '0 2px 8px rgba(13,148,136,0.3)' : 'none',
                     whiteSpace: 'nowrap',
                     border: 'none', cursor: 'pointer'
                   }}
                 >
-                  <Icon size={15} color={isActive ? '#ffffff' : '#64748b'} strokeWidth={isActive ? 2.5 : 2} />
+                  <Icon size={13} color={isActive ? '#ffffff' : '#64748b'} strokeWidth={isActive ? 2.5 : 2} />
                   <span>{label}</span>
                 </button>
               );
@@ -244,22 +244,22 @@ export default function Navbar({
           </nav>
 
           {/* Right Action Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
             {/* Currency Selector Dropdown */}
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setShowCurrencyPicker(!showCurrencyPicker)}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '5px',
-                  padding: '7px 11px', borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', gap: '4px',
+                  padding: '6px 10px', borderRadius: '10px',
                   border: '1.5px solid #cbd5e1', background: '#ffffff',
-                  fontSize: '12px', fontWeight: 800, color: '#1e293b',
+                  fontSize: '11px', fontWeight: 800, color: '#1e293b',
                   cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                 }}
               >
                 <span style={{ color: '#0d9488', fontWeight: 900 }}>{currentSymbol}</span>
                 <span>{currency}</span>
-                <ChevronDown size={12} color="#64748b" />
+                <ChevronDown size={11} color="#64748b" />
               </button>
 
               {showCurrencyPicker && (
@@ -293,32 +293,32 @@ export default function Navbar({
             <button
               onClick={onToggleAiAgent}
               style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '8px 14px', borderRadius: '12px',
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 12px', borderRadius: '10px',
                 background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
                 color: '#ffffff', fontSize: '12px', fontWeight: 800,
-                boxShadow: '0 4px 14px rgba(124,58,237,0.35)',
-                border: 'none', cursor: 'pointer', transition: 'all 0.2s'
+                boxShadow: '0 3px 10px rgba(124,58,237,0.35)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.15s'
               }}
             >
-              <Sparkles size={14} />
-              <span style={{ display: 'none' }} className="sm:inline">AI Planner</span>
+              <Sparkles size={13} />
+              <span>AI Plan</span>
             </button>
 
             {/* Plan New Trip */}
             <button
               onClick={onOpenCreateTrip}
               style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '8px 14px', borderRadius: '12px',
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 12px', borderRadius: '10px',
                 background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
                 color: '#ffffff', fontSize: '12px', fontWeight: 800,
-                boxShadow: '0 4px 14px rgba(13,148,136,0.35)',
-                border: 'none', cursor: 'pointer', transition: 'all 0.2s'
+                boxShadow: '0 3px 10px rgba(13,148,136,0.35)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.15s'
               }}
             >
-              <Plus size={15} strokeWidth={2.5} />
-              <span style={{ display: 'none' }} className="sm:inline">New Trip</span>
+              <Plus size={14} strokeWidth={2.5} />
+              <span>New Trip</span>
             </button>
 
             {/* User Profile / Auth Button */}
@@ -327,16 +327,16 @@ export default function Navbar({
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '3px', borderRadius: '99px',
+                    display: 'flex', alignItems: 'center', gap: '4px',
+                    padding: '2px', borderRadius: '99px',
                     border: '2px solid #0d9488', background: 'transparent',
                     cursor: 'pointer'
                   }}
                 >
                   <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
+                    width: '30px', height: '30px', borderRadius: '50%',
                     background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)',
-                    color: '#ffffff', fontWeight: 900, fontSize: '13px',
+                    color: '#ffffff', fontWeight: 900, fontSize: '12px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}>
                     {user.name?.[0]?.toUpperCase() || 'U'}
@@ -380,63 +380,20 @@ export default function Navbar({
               <button
                 onClick={onOpenAuth}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '8px 14px', borderRadius: '12px',
+                  display: 'flex', alignItems: 'center', gap: '5px',
+                  padding: '7px 12px', borderRadius: '10px',
                   border: '1.5px solid #cbd5e1', background: '#ffffff',
                   color: '#1e293b', fontSize: '12px', fontWeight: 800,
                   cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                 }}
               >
-                <LogIn size={14} color="#0d9488" strokeWidth={2.5} />
+                <LogIn size={13} color="#0d9488" strokeWidth={2.5} />
                 <span>Login</span>
               </button>
             )}
-
-            {/* Mobile Navigation Toggle Button */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: '36px', height: '36px', borderRadius: '10px',
-                border: '1px solid #cbd5e1', background: '#ffffff',
-                color: '#334155', cursor: 'pointer'
-              }}
-              className="md:hidden"
-            >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Drawer Navigation Menu */}
-      {mobileOpen && (
-        <div style={{
-          background: '#ffffff', borderTop: '1px solid #e2e8f0',
-          padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '6px'
-        }} className="md:hidden">
-          {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
-            const isActive = activeTab === id;
-            return (
-              <button
-                key={id}
-                onClick={() => { setActiveTab(id); setMobileOpen(false); }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  padding: '10px 14px', borderRadius: '10px',
-                  fontSize: '13px', fontWeight: isActive ? 800 : 600,
-                  background: isActive ? 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)' : '#f8fafc',
-                  color: isActive ? '#ffffff' : '#334155',
-                  border: 'none', textAlign: 'left', cursor: 'pointer'
-                }}
-              >
-                <Icon size={17} color={isActive ? '#ffffff' : '#0d9488'} />
-                <span>{label}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
     </header>
   );
 }
