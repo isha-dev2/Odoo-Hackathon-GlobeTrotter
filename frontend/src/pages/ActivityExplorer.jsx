@@ -1,125 +1,19 @@
 import React, { useState } from 'react';
 import {
   Search, Filter, Plus, Clock, DollarSign, Star,
-  Compass, Check, Tag, Sparkles
+  Compass, Check, Tag, Sparkles, MapPin
 } from 'lucide-react';
-
-const ACTIVITIES = [
-  {
-    id: 'act-1',
-    name: 'Eiffel Tower Summit & Champagne Toast',
-    city: 'Paris',
-    country: 'France',
-    category: 'Sightseeing',
-    cost: 45,
-    duration: '2.5 hours',
-    rating: 4.9,
-    reviews: 1240,
-    description: 'Skip-the-line elevator ticket to the top summit of the Eiffel Tower with panoramic Paris views and audio guide.',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800'
-  },
-  {
-    id: 'act-2',
-    name: 'Louvre Museum Guided Masterpieces Tour',
-    city: 'Paris',
-    country: 'France',
-    category: 'Culture',
-    cost: 38,
-    duration: '3 hours',
-    rating: 4.8,
-    reviews: 980,
-    description: 'Expert historian tour covering the Mona Lisa, Venus de Milo, Winged Victory, and French Crown Jewels.',
-    imageUrl: 'https://images.unsplash.com/photo-1565099824688-e93eb20fe622?w=800'
-  },
-  {
-    id: 'act-3',
-    name: 'Shibuya Sky Sunset & Ramen Tasting',
-    city: 'Tokyo',
-    country: 'Japan',
-    category: 'Food',
-    cost: 55,
-    duration: '2.5 hours',
-    rating: 4.9,
-    reviews: 870,
-    description: '360-degree glass observation deck overlooking Shibuya Crossing followed by authentic tonkotsu ramen dining.',
-    imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800'
-  },
-  {
-    id: 'act-4',
-    name: 'Mt. Fuji & Lake Ashi Bullet Train Tour',
-    city: 'Tokyo',
-    country: 'Japan',
-    category: 'Adventure',
-    cost: 120,
-    duration: '8 hours',
-    rating: 4.9,
-    reviews: 1450,
-    description: 'Full-day excursion with Shinkansen bullet train, Mt. Fuji 5th station panoramic view, and pirate ship cruise on Lake Ashi.',
-    imageUrl: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800'
-  },
-  {
-    id: 'act-5',
-    name: 'Colosseum & Ancient Gladiator Arena Floor',
-    city: 'Rome',
-    country: 'Italy',
-    category: 'Culture',
-    cost: 50,
-    duration: '3 hours',
-    rating: 4.8,
-    reviews: 2100,
-    description: 'Exclusive restricted access onto the Gladiator Arena floor, Underground chambers, Roman Forum, and Palatine Hill.',
-    imageUrl: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800'
-  },
-  {
-    id: 'act-6',
-    name: 'Sagrada Família Towers & Gaudí Museum',
-    city: 'Barcelona',
-    country: 'Spain',
-    category: 'Sightseeing',
-    cost: 42,
-    duration: '2 hours',
-    rating: 4.9,
-    reviews: 1890,
-    description: 'Fast-track access to Antoni Gaudí’s unearthly basilica with Nativity and Passion Tower access overlooking Barcelona.',
-    imageUrl: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800'
-  },
-  {
-    id: 'act-7',
-    name: 'Ubud Rice Terrace Jungle Swing & Waterfall',
-    city: 'Bali',
-    country: 'Indonesia',
-    category: 'Adventure',
-    cost: 35,
-    duration: '4 hours',
-    rating: 4.7,
-    reviews: 730,
-    description: 'Iconic Bali jungle swing above Tegalalang Rice Terraces followed by swimming in pristine Tegenungan Waterfall.',
-    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800'
-  },
-  {
-    id: 'act-8',
-    name: 'Broadway Musical VIP Orchestra Seats',
-    city: 'New York City',
-    country: 'United States',
-    category: 'Nightlife',
-    cost: 145,
-    duration: '2.5 hours',
-    rating: 4.9,
-    reviews: 640,
-    description: 'Premium seats to award-winning Broadway production in the heart of Manhattan’s Times Square theater district.',
-    imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800'
-  }
-];
+import { MOCK_ACTIVITIES } from '../api/client';
 
 const CATEGORIES = ['All', 'Sightseeing', 'Food', 'Adventure', 'Culture', 'Nightlife'];
 
-export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol = '$' }) {
+export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol = '₹' }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
-  const [maxPrice, setMaxPrice] = useState(200);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [addedId, setAddedId] = useState(null);
 
-  const filtered = ACTIVITIES.filter(a => {
+  const filtered = MOCK_ACTIVITIES.filter(a => {
     const matchSearch = a.name.toLowerCase().includes(search.toLowerCase()) ||
       a.city.toLowerCase().includes(search.toLowerCase()) ||
       a.description.toLowerCase().includes(search.toLowerCase());
@@ -149,16 +43,16 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.35)', borderRadius: '99px', padding: '4px 12px', marginBottom: '10px' }}>
             <Compass size={12} color="#34d399" />
             <span style={{ fontSize: '11px', fontWeight: 800, color: '#6ee7b7', letterSpacing: '0.05em' }}>
-              CURATED GLOBAL EXPERIENCES & TOURS
+              CURATED GLOBAL & INDIAN EXPERIENCES
             </span>
           </div>
 
           <h1 style={{ fontSize: '32px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.5px', margin: 0 }}>
-            Activity & Tour Explorer
+            Activity & Tour Explorer ({MOCK_ACTIVITIES.length})
           </h1>
 
           <p style={{ fontSize: '14px', color: '#cbd5e1', marginTop: '8px', maxWidth: '600px' }}>
-            Browse sightseeing tours, gourmet culinary walks, museum fast-tracks, and outdoor adventures to enrich your itinerary.
+            Browse royal fort safaris, Kerala houseboat cruises, Himalayan paragliding, or global experiences to enrich your itinerary.
           </p>
         </div>
       </div>
@@ -175,7 +69,7 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search tours, museums, ramen, hikes..."
+            placeholder="Search fort safaris, houseboats, paragliding, ramen, food tours..."
             style={{
               width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1',
               borderRadius: '12px', padding: '10px 14px 10px 40px',
@@ -205,17 +99,17 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
           ))}
         </div>
 
-        {/* Price slider */}
+        {/* Price Slider */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '6px 12px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
-          <span style={{ fontSize: '11px', fontWeight: 800, color: '#64748b' }}>Max {currencySymbol}{maxPrice}</span>
+          <span style={{ fontSize: '11px', fontWeight: 800, color: '#64748b' }}>Max {currencySymbol}{maxPrice.toLocaleString()}</span>
           <input
             type="range"
-            min="20"
-            max="200"
-            step="10"
+            min="500"
+            max="15000"
+            step="500"
             value={maxPrice}
             onChange={e => setMaxPrice(Number(e.target.value))}
-            style={{ cursor: 'pointer', width: '80px' }}
+            style={{ cursor: 'pointer', width: '100px' }}
           />
         </div>
       </div>
@@ -258,7 +152,7 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
                   borderRadius: '10px', padding: '4px 12px',
                   fontSize: '14px', fontWeight: 900, boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                 }}>
-                  {currencySymbol}{act.cost}
+                  {currencySymbol}{act.cost.toLocaleString()}
                 </div>
               </div>
 
@@ -276,13 +170,13 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
                     </div>
                   </div>
 
-                  <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', margin: '0 0 8px', lineHeight: 1.3 }}>
+                  <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#0f172a', margin: '0 0 8px', lineHeight: 1.3 }}>
                     {act.name}
                   </h3>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#64748b', fontWeight: 600, marginBottom: '12px' }}>
                     <Clock size={14} color="#0d9488" />
-                    <span>Duration: {act.duration}</span>
+                    <span>Duration: {Math.round(act.duration / 60)} hours</span>
                   </div>
 
                   <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: '0 0 16px' }}>
