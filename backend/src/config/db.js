@@ -1,7 +1,21 @@
+require('dotenv').config();
+
 const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const connectionString = process.env.DATABASE_URL;
+
+const pool = new Pool({
+  connectionString,
+  ssl:
+    connectionString &&
+    (connectionString.includes('sslmode=require') || connectionString.includes('prisma.io'))
+      ? { rejectUnauthorized: false }
+      : false,
+});
+
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 module.exports = prisma;
