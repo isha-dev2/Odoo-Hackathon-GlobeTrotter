@@ -11,6 +11,7 @@ const activityRoutes = require('./routes/activity.routes');
 const budgetRoutes = require('./routes/budget.routes');
 const adminRoutes = require('./routes/admin.routes');
 const agentRoutes = require('./routes/agent.routes');
+const paymentRoutes = require('./routes/payment.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// API Routes (All 13 Features Supported + AI Agent)
+// API Routes (All 13 Features Supported + AI Agent & Online Payment)
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/trips', tripRoutes);
@@ -29,6 +30,7 @@ app.use('/api/activities', activityRoutes);
 app.use('/api/budget', budgetRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/agent', agentRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Health check and root endpoints
 app.get('/', (req, res) => {
