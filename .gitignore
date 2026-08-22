@@ -1,26 +1,35 @@
-# Node
+# Node & Dependencies
 node_modules/
 dist/
+dist-ssr/
 build/
 .env
 .env.local
+*.local
 
-# Prisma
+# Prisma & Backend
 backend/prisma/dev.db
-
-# OS
-.DS_Store
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Prisma agent-skill bundles (not needed in repo)
 backend/.agents/
 backend/.claude/
 backend/.windsurf/
 backend/skills-lock.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS & IDE
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
