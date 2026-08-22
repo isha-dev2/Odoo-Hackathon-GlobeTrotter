@@ -25,10 +25,8 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       onAuthSuccess(res.data.user || { name: form.name || form.email.split('@')[0], email: form.email });
       onClose();
     } catch (err) {
-      // Demo fallback
-      const demoUser = { name: form.name || form.email.split('@')[0], email: form.email, id: 'demo-1' };
-      onAuthSuccess(demoUser);
-      onClose();
+      console.error('Auth error:', err);
+      setError(err.response?.data?.error || err.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
