@@ -1,181 +1,237 @@
 import React, { useState } from 'react';
-import { User, Mail, Globe, Camera, Shield, Save, LogOut, Star, Map, DollarSign, Calendar } from 'lucide-react';
+import {
+  User, Mail, Globe, Heart, Shield, LogOut,
+  Save, Check, MapPin, Compass, Sparkles, Award
+} from 'lucide-react';
 
-const AVATAR_COLORS = ['#0d9488', '#7c3aed', '#f59e0b', '#3b82f6', '#ec4899', '#22c55e'];
+export default function UserProfile({
+  user,
+  trips = [],
+  currency,
+  setCurrency,
+  onUpdateUser,
+  onLogout,
+  onNavigateTab
+}) {
+  const [name, setName] = useState(user?.name || 'Alex Johnson');
+  const [email, setEmail] = useState(user?.email || 'alex.traveler@example.com');
+  const [bio, setBio] = useState('Passionate global nomad, architecture enthusiast, and coffee hunter exploring cultural gems across Europe and Asia.');
+  const [travelStyle, setTravelStyle] = useState(['Cultural & Heritage', 'Food & Wine', 'Boutique & Scenic']);
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
-export default function UserProfile({ user, onUpdateUser, onLogout }) {
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({
-    name: user?.name || 'Traveler',
-    email: user?.email || 'traveler@globetrotter.com',
-    bio: user?.bio || 'Passionate explorer of new cultures and destinations.',
-    avatarColor: user?.avatarColor || '#0d9488',
-  });
+  const wishlistCities = [
+    { name: 'Reykjavik', country: 'Iceland', flag: '🇮🇸', tag: 'Northern Lights' },
+    { name: 'Cape Town', country: 'South Africa', flag: '🇿🇦', tag: 'Safari & Ocean' },
+    { name: 'Kyoto', country: 'Japan', flag: '🇯🇵', tag: 'Ancient Shrines' },
+  ];
 
-  const handleSave = () => {
-    onUpdateUser({ ...user, ...form });
-    setEditing(false);
+  const handleSave = (e) => {
+    e.preventDefault();
+    onUpdateUser({ ...user, name, email, bio });
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
   };
 
-  const profileUser = user || { name: 'Traveler', email: 'demo@globetrotter.com' };
-  const displayName = form.name || profileUser.name;
-  const initial = displayName[0]?.toUpperCase() || 'T';
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 680, margin: '0 auto' }}>
-      {/* Profile Header */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      
+      {/* Header Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, #0f172a, #134e4a)',
-        borderRadius: 24, padding: '36px', position: 'relative', overflow: 'hidden'
+        background: 'linear-gradient(135deg, #042f2e 0%, #064e3b 40%, #0f172a 100%)',
+        borderRadius: '24px', padding: '36px 40px',
+        position: 'relative', overflow: 'hidden',
+        boxShadow: '0 12px 36px -8px rgba(4, 47, 46, 0.4)',
+        border: '1px solid rgba(16, 185, 129, 0.2)'
       }}>
-        <div style={{
-          position: 'absolute', top: -40, right: -40, width: 150, height: 150,
-          borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.12), transparent)'
-        }} />
-
-        <div style={{ display: 'flex', gap: 20, alignItems: 'center', position: 'relative' }}>
-          {/* Avatar */}
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
           <div style={{
-            width: 72, height: 72, borderRadius: 20, flexShrink: 0,
-            background: `linear-gradient(135deg, ${form.avatarColor}, ${form.avatarColor}aa)`,
+            width: '72px', height: '72px', borderRadius: '20px',
+            background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28, fontWeight: 900, color: 'white',
-            boxShadow: `0 8px 24px ${form.avatarColor}50`
+            fontSize: '28px', fontWeight: 900, color: '#ffffff',
+            boxShadow: '0 8px 24px rgba(13,148,136,0.4)'
           }}>
-            {initial}
+            {name[0]?.toUpperCase() || 'U'}
           </div>
 
-          <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 900, color: 'white', margin: 0, letterSpacing: '-0.5px' }}>
-              {displayName}
+          <div>
+            <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
+              {name}
             </h1>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{form.email}</div>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 8,
-              background: 'rgba(13,148,136,0.2)', border: '1px solid rgba(13,148,136,0.3)',
-              borderRadius: 99, padding: '3px 10px'
-            }}>
-              <Star size={10} color="#34d399" fill="#34d399" />
-              <span style={{ fontSize: 10, fontWeight: 700, color: '#34d399' }}>Globe Explorer</span>
+            <div style={{ fontSize: '13px', color: '#cbd5e1', marginTop: '4px' }}>
+              {email} · GlobeTrotter Explorer Member
             </div>
           </div>
-
-          <button
-            onClick={() => setEditing(e => !e)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)',
-              color: 'white', borderRadius: 10, padding: '8px 14px',
-              fontSize: 12, fontWeight: 700, cursor: 'pointer'
-            }}
-          >
-            {editing ? 'Cancel' : '✏️ Edit Profile'}
-          </button>
         </div>
       </div>
 
-      {/* Edit Form */}
-      {editing && (
-        <div style={{ background: 'white', borderRadius: 20, padding: '24px', border: '1.5px solid #e8f0ef' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#0f172a', margin: '0 0 18px' }}>Edit Profile</h3>
+      {/* Main Grid: Profile Form + Stats & Wishlist */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        
+        {/* Left: Profile Settings Form */}
+        <div style={{
+          background: '#ffffff', borderRadius: '24px', padding: '28px',
+          border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+        }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', margin: '0 0 20px' }}>
+            Account & Travel Profile
+          </h2>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 6, letterSpacing: '0.06em' }}>FULL NAME</label>
+              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Full Name</label>
               <input
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                style={{
-                  width: '100%', background: '#f8fafc', border: '1.5px solid #e2e8f0',
-                  borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#0f172a',
-                  outline: 'none', fontFamily: 'Inter, sans-serif'
-                }}
+                value={name}
+                onChange={e => setName(e.target.value)}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 600, outline: 'none' }}
               />
             </div>
+
             <div>
-              <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 6, letterSpacing: '0.06em' }}>BIO</label>
+              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Email Address</label>
+              <input
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 600, outline: 'none' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Traveler Bio</label>
               <textarea
-                value={form.bio}
-                onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
-                rows={2}
-                style={{
-                  width: '100%', background: '#f8fafc', border: '1.5px solid #e2e8f0',
-                  borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#0f172a',
-                  outline: 'none', fontFamily: 'Inter, sans-serif', resize: 'none'
-                }}
+                rows={3}
+                value={bio}
+                onChange={e => setBio(e.target.value)}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 500, outline: 'none', resize: 'none' }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 8, letterSpacing: '0.06em' }}>AVATAR COLOR</label>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {AVATAR_COLORS.map(c => (
-                  <button key={c} type="button" onClick={() => setForm(f => ({ ...f, avatarColor: c }))} style={{
-                    width: 32, height: 32, borderRadius: '50%', background: c, border: 'none',
-                    cursor: 'pointer', outline: form.avatarColor === c ? `3px solid ${c}` : 'none',
-                    outlineOffset: '2px', transition: 'outline 0.1s'
-                  }} />
-                ))}
-              </div>
+              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Preferred Currency</label>
+              <select
+                value={currency}
+                onChange={e => setCurrency(e.target.value)}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 700, outline: 'none' }}
+              >
+                <option value="USD">USD ($) — US Dollar</option>
+                <option value="EUR">EUR (€) — Euro</option>
+                <option value="GBP">GBP (£) — British Pound</option>
+                <option value="JPY">JPY (¥) — Japanese Yen</option>
+                <option value="INR">INR (₹) — Indian Rupee</option>
+              </select>
             </div>
 
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={handleSave} style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                background: 'linear-gradient(135deg, #0d9488, #10b981)',
-                color: 'white', border: 'none', borderRadius: 10,
-                padding: '11px', fontSize: 13, fontWeight: 700, cursor: 'pointer'
-              }}>
-                <Save size={14} /> Save Changes
+            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+              <button
+                type="submit"
+                style={{
+                  flex: 1, padding: '12px', borderRadius: '12px',
+                  background: savedSuccess ? '#10b981' : 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
+                  color: '#ffffff', border: 'none', fontSize: '13px', fontWeight: 800, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                  boxShadow: '0 4px 14px rgba(13,148,136,0.3)'
+                }}
+              >
+                {savedSuccess ? <Check size={16} strokeWidth={3} /> : <Save size={16} />}
+                <span>{savedSuccess ? 'Profile Updated!' : 'Save Changes'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onLogout}
+                style={{
+                  padding: '12px 18px', borderRadius: '12px',
+                  border: '1.5px solid #fecaca', background: '#fff5f5',
+                  color: '#ef4444', fontSize: '13px', fontWeight: 800, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '6px'
+                }}
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
               </button>
             </div>
-          </div>
+          </form>
         </div>
-      )}
 
-      {/* Profile Info */}
-      {!editing && (
-        <div style={{ background: 'white', borderRadius: 20, padding: '24px', border: '1.5px solid #e8f0ef' }}>
-          <h3 style={{ fontSize: 14, fontWeight: 800, color: '#0f172a', margin: '0 0 16px' }}>About</h3>
-          <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7, margin: 0 }}>{form.bio}</p>
-        </div>
-      )}
+        {/* Right: Travel Passport Stats & Saved Wishlist */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          {/* Stats Passport */}
+          <div style={{
+            background: '#ffffff', borderRadius: '24px', padding: '24px',
+            border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 900, color: '#0f172a', margin: '0 0 16px' }}>
+              Travel Passport Achievements
+            </h3>
 
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-        {[
-          { label: 'Trips Planned', value: '3', icon: Map, bg: '#f0fdf9', color: '#0d9488' },
-          { label: 'Cities Visited', value: '8', icon: Globe, bg: '#faf5ff', color: '#7c3aed' },
-          { label: 'Total Budget', value: '$12,500', icon: DollarSign, bg: '#fffbeb', color: '#f59e0b' },
-        ].map(({ label, value, icon: Icon, bg, color }) => (
-          <div key={label} style={{ background: bg, borderRadius: 16, padding: '18px 16px', border: '1px solid rgba(0,0,0,0.04)' }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: color, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              marginBottom: 10
-            }}>
-              <Icon size={16} color="white" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+              <div style={{ background: '#f0fdf9', padding: '16px', borderRadius: '16px', textAlign: 'center', border: '1px solid #a7f3d0' }}>
+                <div style={{ fontSize: '24px', fontWeight: 900, color: '#0f766e' }}>{trips.length}</div>
+                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>Trips Planned</div>
+              </div>
+              <div style={{ background: '#faf5ff', padding: '16px', borderRadius: '16px', textAlign: 'center', border: '1px solid #e9d5ff' }}>
+                <div style={{ fontSize: '24px', fontWeight: 900, color: '#7c3aed' }}>12</div>
+                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>Cities Visited</div>
+              </div>
+              <div style={{ background: '#eff6ff', padding: '16px', borderRadius: '16px', textAlign: 'center', border: '1px solid #bfdbfe' }}>
+                <div style={{ fontSize: '24px', fontWeight: 900, color: '#2563eb' }}>4</div>
+                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>Passports Stamps</div>
+              </div>
             </div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>{value}</div>
-            <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, marginTop: 2 }}>{label}</div>
           </div>
-        ))}
+
+          {/* Wishlist */}
+          <div style={{
+            background: '#ffffff', borderRadius: '24px', padding: '24px',
+            border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                Saved Destination Wishlist
+              </h3>
+              <button
+                onClick={() => onNavigateTab('cities')}
+                style={{ fontSize: '12px', fontWeight: 800, color: '#0d9488', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                + Browse More
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {wishlistCities.map(w => (
+                <div
+                  key={w.name}
+                  style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '12px 16px', background: '#f8fafc', borderRadius: '14px', border: '1px solid #e2e8f0'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '20px' }}>{w.flag}</span>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{w.name}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>{w.country} · {w.tag}</div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => onNavigateTab('cities')}
+                    style={{
+                      background: '#f0fdf9', border: '1px solid #a7f3d0', borderRadius: '8px',
+                      padding: '6px 12px', fontSize: '11px', fontWeight: 800, color: '#0f766e', cursor: 'pointer'
+                    }}
+                  >
+                    Plan Trip
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      {/* Logout */}
-      <div style={{ background: 'white', borderRadius: 16, padding: '16px 20px', border: '1.5px solid #f1f5f9' }}>
-        <button
-          onClick={onLogout}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            background: '#fff5f5', border: '1px solid #fed7d7',
-            color: '#e53e3e', borderRadius: 10, padding: '10px 18px',
-            fontSize: 13, fontWeight: 700, cursor: 'pointer'
-          }}
-        >
-          <LogOut size={14} /> Sign Out
-        </button>
-      </div>
     </div>
   );
 }

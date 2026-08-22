@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Mock Initial Data fallback if backend connection fails
+// Mock Initial Cities
 export const MOCK_CITIES = [
   { id: 'city-1', name: 'Paris', country: 'France', costIndex: 85.5, popularity: 98, imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800' },
   { id: 'city-2', name: 'Tokyo', country: 'Japan', costIndex: 82.0, popularity: 97, imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800' },
@@ -33,16 +33,16 @@ export const MOCK_CITIES = [
 export const MOCK_ACTIVITIES = [
   { id: 'act-1', name: 'Eiffel Tower Summit Tour', category: 'Sightseeing', cost: 45, duration: 120, description: 'Skip-the-line access to top level of Eiffel Tower with champagne toast.', imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400' },
   { id: 'act-2', name: 'Louvre Museum Masterpieces', category: 'Culture', cost: 35, duration: 180, description: 'Guided walk to Mona Lisa, Venus de Milo and ancient sculptures.', imageUrl: 'https://images.unsplash.com/photo-1565099824688-e93eb20fe622?w=400' },
-  { id: 'act-3', name: 'Shibuya Sky & Ramen Tasting', category: 'Food', cost: 50, duration: 150, description: '360 degree sunset deck followed by authentic Michelin-recommended ramen.', imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400' },
-  { id: 'act-4', name: 'Gondola Ride along Grand Canal', category: 'Relaxation', cost: 90, duration: 45, description: 'Romantic traditional gondola ride through historic Venice canals.', imageUrl: 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=400' },
-  { id: 'act-5', name: 'Mt. Fuji & Hakone Day Trip', category: 'Adventure', cost: 120, duration: 480, description: 'Bullet train journey, Lake Ashi cruise and Mt. Fuji 5th station.', imageUrl: 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=400' },
+  { id: 'act-3', name: 'Colosseum & Roman Forum Tour', category: 'Culture', cost: 50, duration: 180, description: 'Exclusive arena floor access with ancient ruins & gladiators history.', imageUrl: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400' },
+  { id: 'act-4', name: 'Trastevere Sunset Food & Wine Walk', category: 'Food', cost: 45, duration: 150, description: 'Authentic handmade pasta, gelato, and Italian wines in historic alleys.', imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400' },
+  { id: 'act-5', name: 'Shibuya Sky & Ramen Tasting', category: 'Food', cost: 50, duration: 150, description: '360 degree sunset deck followed by authentic Michelin-recommended ramen.', imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400' },
 ];
 
 export const MOCK_TRIPS = [
   {
     id: 'demo-trip-1',
     name: 'European Dream Vacation 2026',
-    description: '14-day grand tour covering Paris, Rome and Barcelona with cultural tours & fine dining.',
+    description: '14-day grand tour covering Paris and Rome with cultural tours, monuments & fine dining.',
     coverPhoto: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800',
     startDate: '2026-09-01',
     endDate: '2026-09-15',
@@ -54,17 +54,17 @@ export const MOCK_TRIPS = [
         id: 'stop-1',
         city: MOCK_CITIES[0],
         startDate: '2026-09-01',
-        endDate: '2026-09-05',
+        endDate: '2026-09-07',
         order: 1,
         activities: [MOCK_ACTIVITIES[0], MOCK_ACTIVITIES[1]],
       },
       {
         id: 'stop-2',
         city: MOCK_CITIES[3],
-        startDate: '2026-09-05',
-        endDate: '2026-09-10',
+        startDate: '2026-09-08',
+        endDate: '2026-09-15',
         order: 2,
-        activities: [MOCK_ACTIVITIES[3]],
+        activities: [MOCK_ACTIVITIES[2], MOCK_ACTIVITIES[3]],
       },
     ],
   },
@@ -85,7 +85,7 @@ export const MOCK_TRIPS = [
         startDate: '2026-10-10',
         endDate: '2026-10-16',
         order: 1,
-        activities: [MOCK_ACTIVITIES[2], MOCK_ACTIVITIES[4]],
+        activities: [MOCK_ACTIVITIES[4]],
       },
     ],
   },
