@@ -35,6 +35,7 @@
 ## 🛠️ Tech Stack
 
 - **Frontend Core**: React 19 + Vite 6
+- **Backend API**: Express + Prisma ORM + PostgreSQL
 - **Styling**: Custom CSS Design System with CSS Variables & Glassmorphism
 - **Iconography**: Lucide React Icons
 - **Celebrations**: Canvas Confetti
