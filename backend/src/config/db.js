@@ -1,18 +1,7 @@
-let PrismaClient;
+const { PrismaClient } = require('@prisma/client');
+const { PrismaPg } = require('@prisma/adapter-pg');
 
-try {
-  // Try custom generated path first as specified in schema.prisma (output = "../generated/prisma")
-  PrismaClient = require('../../generated/prisma').PrismaClient;
-} catch (err1) {
-  try {
-    // Fallback to standard @prisma/client package
-    PrismaClient = require('@prisma/client').PrismaClient;
-  } catch (err2) {
-    console.error('Failed to load PrismaClient from ../../generated/prisma or @prisma/client:', err2);
-    throw err2;
-  }
-}
-
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 module.exports = prisma;
