@@ -41,9 +41,24 @@ export default function App() {
     }
   }, [isDarkMode]);
 
-  // Fetch live trips from backend on mount
+  // Fetch live trips and user authentication on mount
   useEffect(() => {
-    fetchTrips();
+    const initAuthAndData = async () => {
+      const token = localStorage.getItem('globetrotter_token');
+      if (token) {
+        try {
+          const profileRes = await api.get('/auth/me');
+          if (profileRes.data && profileRes.data.user) {
+            setUser(profileRes.data.user);
+          }
+        } catch (err) {
+          console.warn('Auto-authentication failed:', err);
+          localStorage.removeItem('globetrotter_token');
+        }
+      }
+      fetchTrips();
+    };
+    initAuthAndData();
   }, []);
 
   const fetchTrips = async () => {
@@ -71,10 +86,16 @@ export default function App() {
     setSelectedTrip(updatedTrip);
   };
 
-  const handleDeleteTrip = (tripId) => {
+  const handleDeleteTrip = async (tripId) => {
+    try {
+      await api.delete(`/trips/${tripId}`);
+    } catch (err) {
+      console.error('Failed to delete trip on backend:', err);
+    }
     setTrips((prev) => prev.filter((t) => t.id !== tripId));
     if (selectedTrip?.id === tripId) {
-      setSelectedTrip(trips.find((t) => t.id !== tripId) || null);
+      const remainingTrips = trips.filter((t) => t.id !== tripId);
+      setSelectedTrip(remainingTrips.length > 0 ? remainingTrips[0] : null);
     }
   };
 
@@ -193,20 +214,39 @@ export default function App() {
 
         {activeTab === 'cities' && (
           <CityExplorer
-            onAddCityToTrip={(city) => {
+            onAddCityToTrip={async (city) => {
               if (selectedTrip) {
-                const newStop = {
-                  id: `stop-${Date.now()}`,
-                  city,
-                  startDate: selectedTrip.startDate,
-                  endDate: selectedTrip.endDate,
-                  order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1,
-                  activities: [],
-                };
-                handleUpdateTrip({
-                  ...selectedTrip,
-                  stops: [...(selectedTrip.stops || []), newStop],
-                });
+                try {
+                  const res = await api.post('/stops', {
+                    tripId: selectedTrip.id,
+                    cityId: city.id,
+                    startDate: selectedTrip.startDate,
+                    endDate: selectedTrip.endDate,
+                    order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1
+                  });
+                  if (res.data && res.data.stop) {
+                    const newStop = res.data.stop;
+                    handleUpdateTrip({
+                      ...selectedTrip,
+                      stops: [...(selectedTrip.stops || []), newStop],
+                    });
+                  }
+                } catch (err) {
+                  console.error('Failed to save stop to backend:', err);
+                  // fallback
+                  const newStop = {
+                    id: `stop-${Date.now()}`,
+                    city,
+                    startDate: selectedTrip.startDate,
+                    endDate: selectedTrip.endDate,
+                    order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1,
+                    activities: [],
+                  };
+                  handleUpdateTrip({
+                    ...selectedTrip,
+                    stops: [...(selectedTrip.stops || []), newStop],
+                  });
+                }
                 setActiveTab('builder');
               } else {
                 setIsCreateTripOpen(true);
@@ -217,11 +257,31 @@ export default function App() {
 
         {activeTab === 'activities' && (
           <ActivityExplorer
-            onAddActivityToTrip={(act) => {
+            onAddActivityToTrip={async (act) => {
               if (selectedTrip && selectedTrip.stops && selectedTrip.stops.length > 0) {
-                const updatedStops = [...selectedTrip.stops];
-                updatedStops[0].activities = [...(updatedStops[0].activities || []), { ...act, id: `act-${Date.now()}` }];
-                handleUpdateTrip({ ...selectedTrip, stops: updatedStops });
+                const stopToAddTo = selectedTrip.stops[0]; // defaults to first stop in demo
+                try {
+                  const res = await api.post('/activities', {
+                    stopId: stopToAddTo.id,
+                    name: act.name,
+                    category: act.category,
+                    cost: parseFloat(act.cost) || 0,
+                    duration: parseInt(act.duration) || null,
+                    description: act.description
+                  });
+                  if (res.data && res.data.activity) {
+                    const newActivity = res.data.activity;
+                    const updatedStops = [...selectedTrip.stops];
+                    updatedStops[0].activities = [...(updatedStops[0].activities || []), newActivity];
+                    handleUpdateTrip({ ...selectedTrip, stops: updatedStops });
+                  }
+                } catch (err) {
+                  console.error('Failed to add activity on backend:', err);
+                  // fallback
+                  const updatedStops = [...selectedTrip.stops];
+                  updatedStops[0].activities = [...(updatedStops[0].activities || []), { ...act, id: `act-${Date.now()}` }];
+                  handleUpdateTrip({ ...selectedTrip, stops: updatedStops });
+                }
                 setActiveTab('builder');
               } else {
                 setActiveTab('cities');
@@ -241,13 +301,34 @@ export default function App() {
         {activeTab === 'share' && (
           <PublicTripView
             publicTrip={publicTrip || selectedTrip}
-            onCopyTripToAccount={(tripToCopy) => {
+            onCopyTripToAccount={async (tripToCopy) => {
+              if (tripToCopy.shareSlug) {
+                try {
+                  const res = await api.post(`/trips/share/${tripToCopy.shareSlug}/copy`);
+                  if (res.data && res.data.tripId) {
+                    const fetchRes = await api.get('/trips');
+                    if (fetchRes.data && fetchRes.data.trips) {
+                      setTrips(fetchRes.data.trips);
+                      const newlyCopied = fetchRes.data.trips.find(t => t.id === res.data.tripId);
+                      if (newlyCopied) {
+                        setSelectedTrip(newlyCopied);
+                        setActiveTab('builder');
+                        return;
+                      }
+                    }
+                  }
+                } catch (err) {
+                  console.error('Failed to copy public trip on backend:', err);
+                }
+              }
               const copiedTrip = {
                 ...tripToCopy,
                 id: `copied-${Date.now()}`,
                 name: `Copy of ${tripToCopy.name}`,
               };
               setTrips((prev) => [copiedTrip, ...prev]);
+              setSelectedTrip(copiedTrip);
+              setActiveTab('builder');
             }}
             onBackToDashboard={() => setActiveTab('dashboard')}
           />
@@ -257,7 +338,10 @@ export default function App() {
           <UserProfile
             user={user}
             onUpdateUser={(u) => setUser(u)}
-            onLogout={() => setUser(null)}
+            onLogout={() => {
+              localStorage.removeItem('globetrotter_token');
+              setUser(null);
+            }}
           />
         )}
 

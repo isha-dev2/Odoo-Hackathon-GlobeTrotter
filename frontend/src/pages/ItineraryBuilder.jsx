@@ -35,40 +35,114 @@ export default function ItineraryBuilder({ currentTrip, onUpdateTrip, onNavigate
 
   const stops = currentTrip.stops || [];
 
-  const addStop = () => {
-    if (!newStopCity.trim()) return;
-    const newStop = {
-      id: `stop-${Date.now()}`,
-      city: { name: newStopCity.trim() },
-      startDate: currentTrip.startDate,
-      endDate: currentTrip.endDate,
-      order: stops.length + 1,
-      activities: [],
-    };
-    const updated = { ...currentTrip, stops: [...stops, newStop] };
-    onUpdateTrip(updated);
-    setNewStopCity('');
-    setExpandedStop(newStop.id);
+  const addStop = async () => {
+    const cityName = newStopCity.trim();
+    if (!cityName) return;
+    try {
+      let cityId = null;
+      let cityObj = null;
+      const searchRes = await api.get('/cities', { params: { q: cityName } });
+      const foundCity = searchRes.data.cities?.find(c => c.name.toLowerCase() === cityName.toLowerCase());
+      if (foundCity) {
+        cityId = foundCity.id;
+        cityObj = foundCity;
+      } else {
+        const createRes = await api.post('/cities', { name: cityName, country: 'Travel Destination' });
+        cityId = createRes.data.city.id;
+        cityObj = createRes.data.city;
+      }
+
+      const stopRes = await api.post('/stops', {
+        tripId: currentTrip.id,
+        cityId,
+        startDate: currentTrip.startDate,
+        endDate: currentTrip.endDate,
+        order: stops.length + 1
+      });
+
+      if (stopRes.data && stopRes.data.stop) {
+        const dbStop = stopRes.data.stop;
+        dbStop.city = cityObj;
+        const updated = { ...currentTrip, stops: [...stops, dbStop] };
+        onUpdateTrip(updated);
+        setNewStopCity('');
+        setExpandedStop(dbStop.id);
+      }
+    } catch (err) {
+      console.error('Failed to add stop to database:', err);
+      const mockStop = {
+        id: `stop-${Date.now()}`,
+        city: { name: cityName },
+        startDate: currentTrip.startDate,
+        endDate: currentTrip.endDate,
+        order: stops.length + 1,
+        activities: [],
+      };
+      onUpdateTrip({ ...currentTrip, stops: [...stops, mockStop] });
+      setNewStopCity('');
+      setExpandedStop(mockStop.id);
+    }
   };
 
-  const removeStop = (stopId) => {
+  const removeStop = async (stopId) => {
+    try {
+      if (!stopId.startsWith('stop-')) {
+        await api.delete(`/stops/${stopId}`);
+      }
+    } catch (err) {
+      console.error('Failed to delete stop from database:', err);
+    }
     onUpdateTrip({ ...currentTrip, stops: stops.filter(s => s.id !== stopId) });
     if (expandedStop === stopId) setExpandedStop(null);
   };
 
-  const addActivity = (stopId) => {
+  const addActivity = async (stopId) => {
     if (!newAct.name.trim()) return;
-    const activity = { ...newAct, id: `act-${Date.now()}`, cost: parseFloat(newAct.cost) || 0 };
-    const updated = {
-      ...currentTrip,
-      stops: stops.map(s => s.id === stopId ? { ...s, activities: [...(s.activities || []), activity] } : s)
-    };
-    onUpdateTrip(updated);
+    try {
+      let durationInt = parseInt(newAct.duration) || null;
+      const actPayload = {
+        stopId,
+        name: newAct.name.trim(),
+        category: newAct.category,
+        cost: parseFloat(newAct.cost) || 0,
+        duration: durationInt,
+        description: newAct.notes
+      };
+
+      let dbAct = null;
+      if (!stopId.startsWith('stop-')) {
+        const res = await api.post('/activities', actPayload);
+        dbAct = res.data.activity;
+      } else {
+        dbAct = { ...newAct, id: `act-${Date.now()}`, cost: parseFloat(newAct.cost) || 0 };
+      }
+
+      const updated = {
+        ...currentTrip,
+        stops: stops.map(s => s.id === stopId ? { ...s, activities: [...(s.activities || []), dbAct] } : s)
+      };
+      onUpdateTrip(updated);
+    } catch (err) {
+      console.error('Failed to add activity on server:', err);
+      const fallbackAct = { ...newAct, id: `act-${Date.now()}`, cost: parseFloat(newAct.cost) || 0 };
+      const updated = {
+        ...currentTrip,
+        stops: stops.map(s => s.id === stopId ? { ...s, activities: [...(s.activities || []), fallbackAct] } : s)
+      };
+      onUpdateTrip(updated);
+    }
     setNewAct({ name: '', category: 'Sightseeing', duration: '', cost: '', notes: '', time: '' });
     setAddingActivity(null);
   };
 
-  const removeActivity = (stopId, actId) => {
+  const removeActivity = async (stopId, actId) => {
+    try {
+      if (!actId.startsWith('act-')) {
+        await api.delete(`/activities/${actId}`);
+      }
+    } catch (err) {
+      console.error('Failed to delete activity on server:', err);
+    }
     onUpdateTrip({
       ...currentTrip,
       stops: stops.map(s => s.id === stopId ? { ...s, activities: s.activities.filter(a => a.id !== actId) } : s)

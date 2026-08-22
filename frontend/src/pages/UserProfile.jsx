@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Globe, Camera, Shield, Save, LogOut, Star, Map, DollarSign, Calendar } from 'lucide-react';
+import api from '../api/client';
 
 const AVATAR_COLORS = ['#0d9488', '#7c3aed', '#f59e0b', '#3b82f6', '#ec4899', '#22c55e'];
 
@@ -12,8 +13,18 @@ export default function UserProfile({ user, onUpdateUser, onLogout }) {
     avatarColor: user?.avatarColor || '#0d9488',
   });
 
-  const handleSave = () => {
-    onUpdateUser({ ...user, ...form });
+  const handleSave = async () => {
+    try {
+      const res = await api.put('/auth/profile', { name: form.name });
+      if (res.data && res.data.user) {
+        onUpdateUser({ ...user, ...res.data.user, bio: form.bio, avatarColor: form.avatarColor });
+      } else {
+        onUpdateUser({ ...user, ...form });
+      }
+    } catch (err) {
+      console.error('Failed to update profile on server:', err);
+      onUpdateUser({ ...user, ...form });
+    }
     setEditing(false);
   };
 

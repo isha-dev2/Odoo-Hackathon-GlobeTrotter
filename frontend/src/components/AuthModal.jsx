@@ -16,12 +16,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setError('');
     setLoading(true);
     try {
-      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/signup';
       const payload = mode === 'login'
         ? { email: form.email, password: form.password }
         : { name: form.name, email: form.email, password: form.password };
       const res = await api.post(endpoint, payload);
-      if (res.data.token) localStorage.setItem('gt_token', res.data.token);
+      if (res.data.token) localStorage.setItem('globetrotter_token', res.data.token);
       onAuthSuccess(res.data.user || { name: form.name || form.email.split('@')[0], email: form.email });
       onClose();
     } catch (err) {
