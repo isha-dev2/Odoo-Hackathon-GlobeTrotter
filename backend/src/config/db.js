@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 let PrismaClient;
 
 try {
@@ -13,6 +15,23 @@ try {
   }
 }
 
-const prisma = new PrismaClient();
+let prisma;
+
+try {
+  const { Pool } = require('pg');
+  const { PrismaPg } = require('@prisma/adapter-pg');
+  const connectionString = process.env.DATABASE_URL;
+  const pool = new Pool({
+    connectionString,
+    ssl: connectionString && (connectionString.includes('sslmode=require') || connectionString.includes('prisma.io'))
+      ? { rejectUnauthorized: false }
+      : false,
+  });
+  const adapter = new PrismaPg(pool);
+  prisma = new PrismaClient({ adapter });
+} catch (adapterErr) {
+  // Fallback to standard PrismaClient instance if pg driver adapter is not installed
+  prisma = new PrismaClient();
+}
 
 module.exports = prisma;

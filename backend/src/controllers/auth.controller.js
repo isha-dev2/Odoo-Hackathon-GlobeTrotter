@@ -33,7 +33,7 @@ const signup = async (req, res) => {
     });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
+      { id: user.id, email: user.email, name: user.name, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -46,6 +46,7 @@ const signup = async (req, res) => {
         name: user.name,
         email: user.email,
         photo: user.photo,
+        role: user.role,
         createdAt: user.createdAt,
       },
     });
@@ -78,7 +79,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
+      { id: user.id, email: user.email, name: user.name, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -91,6 +92,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         photo: user.photo,
+        role: user.role,
         createdAt: user.createdAt,
       },
     });
@@ -110,6 +112,7 @@ const me = async (req, res) => {
         name: true,
         email: true,
         photo: true,
+        role: true,
         createdAt: true,
       },
     });
@@ -125,8 +128,38 @@ const me = async (req, res) => {
   }
 };
 
+// Update User Profile
+const updateProfile = async (req, res) => {
+  try {
+    const { name, photo } = req.body;
+    const data = {};
+
+    if (name) data.name = name;
+    if (photo !== undefined) data.photo = photo;
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        photo: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return res.status(200).json({ message: 'Profile updated successfully', user });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    return res.status(500).json({ error: 'Failed to update profile.' });
+  }
+};
+
 module.exports = {
   signup,
   login,
   me,
+  updateProfile,
 };
