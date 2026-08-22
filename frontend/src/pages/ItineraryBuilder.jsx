@@ -239,7 +239,7 @@ export default function ItineraryBuilder({
           <span style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
             Popular Picks:
           </span>
-          {['Tokyo', 'Paris', 'Rome', 'Barcelona', 'Dubai', 'London', 'Bali', 'New York'].map(city => (
+          {['Jaipur', 'Goa', 'Munnar & Alleppey', 'Manali & Ladakh', 'Udaipur', 'Dubai', 'Paris', 'Tokyo'].map(city => (
             <button
               key={city}
               onClick={() => addStop(city)}

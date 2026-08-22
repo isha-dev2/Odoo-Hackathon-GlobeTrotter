@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Globe, Plus, Sparkles, Map, LayoutDashboard, List,
   Compass, Activity, Wallet, Calendar, Share2, User,
-  Shield, ChevronDown, LogIn, X, Users, MapPin
+  Shield, ChevronDown, LogIn, X, Users, MapPin, Search
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -10,13 +10,13 @@ const NAV_ITEMS = [
   { id: 'trips', icon: List, label: 'My Trips' },
   { id: 'builder', icon: Map, label: 'Trip Builder' },
   { id: 'itinerary', icon: Compass, label: 'Itinerary View' },
-  { id: 'cities', icon: Globe, label: 'Cities' },
-  { id: 'activities', icon: Activity, label: 'Activities' },
-  { id: 'budget', icon: Wallet, label: 'Budget' },
+  { id: 'map', icon: MapPin, label: 'Route Map' },
   { id: 'calendar', icon: Calendar, label: 'Timeline' },
-  { id: 'map', icon: MapPin, label: 'World Map' },
-  { id: 'share', icon: Share2, label: 'Public Share' },
-  { id: 'admin', icon: Shield, label: 'Admin' },
+  { id: 'budget', icon: Wallet, label: 'Budget Planner' },
+  { id: 'cities', icon: Globe, label: 'Explore Cities' },
+  { id: 'activities', icon: Activity, label: 'Activities & Tours' },
+  { id: 'share', icon: Share2, label: 'Public Showcase' },
+  { id: 'admin', icon: Shield, label: 'Admin Console' },
 ];
 
 export default function Navbar({
@@ -29,35 +29,34 @@ export default function Navbar({
   trips = [],
   selectedTrip,
   onSelectTrip,
-  currency,
+  currency = 'INR',
   setCurrency,
   isDarkMode,
   setIsDarkMode,
-  onExportTrip,
 }) {
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showTripPicker, setShowTripPicker] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const currencies = [
+    { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
     { code: 'USD', symbol: '$', name: 'US Dollar' },
     { code: 'EUR', symbol: '€', name: 'Euro' },
     { code: 'GBP', symbol: '£', name: 'British Pound' },
     { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-    { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
   ];
-  const currentSymbol = currencies.find(c => c.code === currency)?.symbol || '$';
+  const currentSymbol = currencies.find(c => c.code === currency)?.symbol || '₹';
 
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 100,
       background: '#ffffff',
       borderBottom: '1px solid #e2e8f0',
-      boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06)'
+      boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
     }}>
-      {/* Top Utility Ticker / Live Collaboration Bar */}
+      {/* 1. Top Real-Time Collaboration Ticker */}
       <div style={{
-        background: 'linear-gradient(90deg, #042f2e 0%, #064e3b 50%, #065f46 100%)',
+        background: 'linear-gradient(90deg, #042f2e 0%, #064e3b 45%, #065f46 100%)',
         color: '#a7f3d0',
         fontSize: '11px',
         fontWeight: 600,
@@ -73,18 +72,18 @@ export default function Navbar({
               background: '#10b981', display: 'inline-block',
               boxShadow: '0 0 8px #10b981'
             }} />
-            <span>GlobeTrotter Multi-City Engine Active</span>
+            <span>🇮🇳 GlobeTrotter India & Global Travel Engine</span>
           </span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>|</span>
           <span style={{ color: '#ecfdf5', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            <Users size={12} /> 4 Planners Online
+            <Users size={12} /> 4 Planners Collaborating Live
           </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {selectedTrip && (
             <span style={{ color: '#d1fae5' }}>
-              Editing: <strong style={{ color: '#ffffff' }}>{selectedTrip.name}</strong>
+              Active Trip: <strong style={{ color: '#ffffff' }}>{selectedTrip.name}</strong>
             </span>
           )}
           <button
@@ -105,12 +104,12 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Main Navigation Header */}
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', height: '64px', gap: '14px', justifyContent: 'space-between' }}>
+      {/* 2. Main Branding & Actions Header */}
+      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '10px 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
           
-          {/* Logo & Brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
+          {/* Left: Brand & Active Trip Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
             <button
               onClick={() => setActiveTab('dashboard')}
               style={{
@@ -119,51 +118,51 @@ export default function Navbar({
               }}
             >
               <div style={{
-                width: '38px', height: '38px', borderRadius: '10px',
+                width: '40px', height: '40px', borderRadius: '12px',
                 background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 4px 12px rgba(13,148,136,0.35)'
               }}>
-                <Globe size={20} color="white" strokeWidth={2.5} />
+                <Globe size={22} color="white" strokeWidth={2.5} />
               </div>
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '17px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
+                <div style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px', lineHeight: 1.1 }}>
                   GlobeTrotter
                 </div>
-                <div style={{ fontSize: '9px', color: '#0d9488', fontWeight: 800, letterSpacing: '0.08em', marginTop: '2px' }}>
-                  TRAVEL PLANNER
+                <div style={{ fontSize: '10px', color: '#0d9488', fontWeight: 800, letterSpacing: '0.08em', marginTop: '2px' }}>
+                  ODDO HACKATHON EDITION
                 </div>
               </div>
             </button>
 
-            {/* Quick Trip Selector Dropdown */}
+            {/* Quick Trip Switcher */}
             {trips.length > 0 && (
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setShowTripPicker(!showTripPicker)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '6px 10px', borderRadius: '10px',
-                    border: '1.5px solid #e2e8f0', background: '#f8fafc',
-                    fontSize: '11px', fontWeight: 700, color: '#334155',
-                    cursor: 'pointer', maxWidth: '160px'
+                    padding: '7px 12px', borderRadius: '10px',
+                    border: '1.5px solid #cbd5e1', background: '#f8fafc',
+                    fontSize: '12px', fontWeight: 700, color: '#1e293b',
+                    cursor: 'pointer', maxWidth: '200px'
                   }}
                 >
-                  <MapPin size={12} color="#0d9488" />
+                  <MapPin size={13} color="#0d9488" />
                   <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {selectedTrip ? selectedTrip.name : 'Select Trip'}
+                    {selectedTrip ? selectedTrip.name : 'Switch Trip'}
                   </span>
-                  <ChevronDown size={11} color="#64748b" />
+                  <ChevronDown size={12} color="#64748b" />
                 </button>
 
                 {showTripPicker && (
                   <div style={{
                     position: 'absolute', top: '100%', left: 0, marginTop: '6px',
                     background: '#ffffff', borderRadius: '14px', border: '1px solid #e2e8f0',
-                    boxShadow: '0 12px 30px rgba(0,0,0,0.15)', padding: '8px', minWidth: '220px', zIndex: 300
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.15)', padding: '8px', minWidth: '240px', zIndex: 300
                   }}>
                     <div style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', padding: '4px 8px', textTransform: 'uppercase' }}>
-                      Your Trips ({trips.length})
+                      Your Itineraries ({trips.length})
                     </div>
                     {trips.map(t => (
                       <button
@@ -194,7 +193,7 @@ export default function Navbar({
                           color: '#0d9488', background: '#f0fdf4', border: 'none', cursor: 'pointer'
                         }}
                       >
-                        <Plus size={13} /> Create New Trip
+                        <Plus size={13} /> + Create New Trip
                       </button>
                     </div>
                   </div>
@@ -203,61 +202,22 @@ export default function Navbar({
             )}
           </div>
 
-          {/* Center Navigation Bar — Sleek, High-Contrast, All 11 Tabs Visible */}
-          <nav style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            background: '#f8fafc',
-            padding: '3px 6px',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            flex: 1,
-            justifyContent: 'center',
-            overflowX: 'auto'
-          }}>
-            {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
-              const isActive = activeTab === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '4px',
-                    padding: '6px 8px',
-                    borderRadius: '8px',
-                    fontSize: '11px',
-                    fontWeight: isActive ? 800 : 600,
-                    transition: 'all 0.15s ease',
-                    background: isActive ? 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)' : 'transparent',
-                    color: isActive ? '#ffffff' : '#475569',
-                    boxShadow: isActive ? '0 2px 8px rgba(13,148,136,0.3)' : 'none',
-                    whiteSpace: 'nowrap',
-                    border: 'none', cursor: 'pointer'
-                  }}
-                >
-                  <Icon size={13} color={isActive ? '#ffffff' : '#64748b'} strokeWidth={isActive ? 2.5 : 2} />
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Right Action Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-            {/* Currency Selector Dropdown */}
+          {/* Right: Actions (Currency, AI Plan, New Trip, User Profile) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            
+            {/* Currency Selector (Defaults to INR ₹) */}
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setShowCurrencyPicker(!showCurrencyPicker)}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '4px',
-                  padding: '6px 10px', borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', gap: '5px',
+                  padding: '7px 12px', borderRadius: '10px',
                   border: '1.5px solid #cbd5e1', background: '#ffffff',
-                  fontSize: '11px', fontWeight: 800, color: '#1e293b',
+                  fontSize: '12px', fontWeight: 800, color: '#1e293b',
                   cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                 }}
               >
-                <span style={{ color: '#0d9488', fontWeight: 900 }}>{currentSymbol}</span>
+                <span style={{ color: '#0d9488', fontWeight: 900, fontSize: '13px' }}>{currentSymbol}</span>
                 <span>{currency}</span>
                 <ChevronDown size={11} color="#64748b" />
               </button>
@@ -266,8 +226,11 @@ export default function Navbar({
                 <div style={{
                   position: 'absolute', top: '100%', right: 0, marginTop: '6px',
                   background: '#ffffff', borderRadius: '14px', border: '1px solid #e2e8f0',
-                  boxShadow: '0 12px 28px rgba(0,0,0,0.15)', padding: '6px', minWidth: '150px', zIndex: 300
+                  boxShadow: '0 12px 28px rgba(0,0,0,0.15)', padding: '6px', minWidth: '160px', zIndex: 300
                 }}>
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#94a3b8', padding: '4px 8px', textTransform: 'uppercase' }}>
+                    Select Currency
+                  </div>
                   {currencies.map(c => (
                     <button
                       key={c.code}
@@ -282,76 +245,80 @@ export default function Navbar({
                       }}
                     >
                       <span>{c.symbol} {c.code}</span>
-                      <span style={{ fontSize: '10px', color: '#94a3b8' }}>{c.name.split(' ')[0]}</span>
+                      <span style={{ fontSize: '10px', color: '#64748b' }}>{c.name.split(' ')[0]}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* AI Agent Button */}
+            {/* AI Agent Generator Button */}
             <button
               onClick={onToggleAiAgent}
               style={{
-                display: 'flex', alignItems: 'center', gap: '5px',
-                padding: '7px 12px', borderRadius: '10px',
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '8px 14px', borderRadius: '10px',
                 background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
                 color: '#ffffff', fontSize: '12px', fontWeight: 800,
-                boxShadow: '0 3px 10px rgba(124,58,237,0.35)',
+                boxShadow: '0 3px 12px rgba(124,58,237,0.35)',
                 border: 'none', cursor: 'pointer', transition: 'all 0.15s'
               }}
             >
-              <Sparkles size={13} />
-              <span>AI Plan</span>
+              <Sparkles size={14} />
+              <span>AI Trip Planner</span>
             </button>
 
             {/* Plan New Trip */}
             <button
               onClick={onOpenCreateTrip}
               style={{
-                display: 'flex', alignItems: 'center', gap: '5px',
-                padding: '7px 12px', borderRadius: '10px',
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '8px 14px', borderRadius: '10px',
                 background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
                 color: '#ffffff', fontSize: '12px', fontWeight: 800,
-                boxShadow: '0 3px 10px rgba(13,148,136,0.35)',
+                boxShadow: '0 3px 12px rgba(13,148,136,0.35)',
                 border: 'none', cursor: 'pointer', transition: 'all 0.15s'
               }}
             >
-              <Plus size={14} strokeWidth={2.5} />
-              <span>New Trip</span>
+              <Plus size={15} strokeWidth={2.5} />
+              <span>+ Create Trip</span>
             </button>
 
-            {/* User Profile / Auth Button */}
+            {/* User Profile / Auth */}
             {user ? (
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '4px',
-                    padding: '2px', borderRadius: '99px',
-                    border: '2px solid #0d9488', background: 'transparent',
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '3px 8px', borderRadius: '10px',
+                    border: '1.5px solid #cbd5e1', background: '#f8fafc',
                     cursor: 'pointer'
                   }}
                 >
                   <div style={{
-                    width: '30px', height: '30px', borderRadius: '50%',
+                    width: '26px', height: '26px', borderRadius: '50%',
                     background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)',
                     color: '#ffffff', fontWeight: 900, fontSize: '12px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}>
-                    {user.name?.[0]?.toUpperCase() || 'U'}
+                    {user.name?.[0]?.toUpperCase() || 'A'}
                   </div>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                    {user.name?.split(' ')[0] || 'Traveler'}
+                  </span>
+                  <ChevronDown size={11} color="#64748b" />
                 </button>
 
                 {showUserMenu && (
                   <div style={{
-                    position: 'absolute', top: '100%', right: 0, marginTop: '8px',
+                    position: 'absolute', top: '100%', right: 0, marginTop: '6px',
                     background: '#ffffff', borderRadius: '14px', border: '1px solid #e2e8f0',
-                    boxShadow: '0 12px 28px rgba(0,0,0,0.15)', padding: '8px', minWidth: '180px', zIndex: 300
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.15)', padding: '8px', minWidth: '200px', zIndex: 300
                   }}>
                     <div style={{ padding: '8px 10px', borderBottom: '1px solid #f1f5f9' }}>
-                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#0f172a' }}>{user.name || 'Traveler'}</div>
-                      <div style={{ fontSize: '11px', color: '#64748b' }}>{user.email || 'user@globetrotter.io'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#0f172a' }}>{user.name || 'Aarav Sharma'}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>{user.email || 'traveler@globetrotter.in'}</div>
                     </div>
                     <button
                       onClick={() => { setActiveTab('profile'); setShowUserMenu(false); }}
@@ -361,7 +328,7 @@ export default function Navbar({
                         background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '6px'
                       }}
                     >
-                      <User size={14} /> My Profile & Wishlist
+                      <User size={14} /> My Profile & Passport
                     </button>
                     <button
                       onClick={() => { setActiveTab('trips'); setShowUserMenu(false); }}
@@ -384,16 +351,58 @@ export default function Navbar({
                   padding: '7px 12px', borderRadius: '10px',
                   border: '1.5px solid #cbd5e1', background: '#ffffff',
                   color: '#1e293b', fontSize: '12px', fontWeight: 800,
-                  cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                  cursor: 'pointer'
                 }}
               >
                 <LogIn size={13} color="#0d9488" strokeWidth={2.5} />
                 <span>Login</span>
               </button>
             )}
+
           </div>
         </div>
       </div>
+
+      {/* 3. Dedicated Horizontal Navigation Strip (Spacious, Clear & Elegant) */}
+      <div style={{
+        background: '#f8fafc',
+        borderTop: '1px solid #e2e8f0',
+        padding: '6px 24px'
+      }}>
+        <div style={{
+          maxWidth: 1440, margin: '0 auto',
+          display: 'flex', alignItems: 'center', gap: '6px',
+          overflowX: 'auto', WebkitOverflowScrolling: 'touch'
+        }}>
+          {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  fontSize: '12px',
+                  fontWeight: isActive ? 800 : 600,
+                  transition: 'all 0.15s ease',
+                  background: isActive ? 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)' : '#ffffff',
+                  color: isActive ? '#ffffff' : '#475569',
+                  boxShadow: isActive ? '0 2px 8px rgba(13,148,136,0.25)' : '0 1px 2px rgba(0,0,0,0.03)',
+                  border: isActive ? 'none' : '1px solid #e2e8f0',
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer'
+                }}
+              >
+                <Icon size={14} color={isActive ? '#ffffff' : '#0d9488'} strokeWidth={isActive ? 2.5 : 2} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
     </header>
   );
 }

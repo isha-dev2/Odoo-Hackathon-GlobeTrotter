@@ -8,51 +8,63 @@ import {
 const FEATURED_DESTINATIONS = [
   {
     id: 'dest-1',
-    name: 'Santorini',
-    country: 'Greece',
-    flag: '🇬🇷',
-    tag: 'Romantic Escape',
-    color: '#0284c7',
+    name: 'Jaipur & Udaipur',
+    country: 'Rajasthan, India',
+    flag: '🇮🇳',
+    tag: 'Royal Heritage & Forts',
+    color: '#d97706',
     rating: 4.9,
-    costPerDay: 140,
-    bestMonth: 'May - Oct',
-    imageUrl: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800'
+    costPerDay: 2800,
+    bestMonth: 'Oct - Mar',
+    imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800'
   },
   {
     id: 'dest-2',
-    name: 'Kyoto & Osaka',
-    country: 'Japan',
-    flag: '🇯🇵',
-    tag: 'Culture & Temples',
-    color: '#db2777',
-    rating: 4.8,
-    costPerDay: 110,
-    bestMonth: 'Mar - May',
-    imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800'
+    name: 'Goa Coastal Beaches',
+    country: 'Goa, India',
+    flag: '🇮🇳',
+    tag: 'Beach & Nightlife',
+    color: '#0d9488',
+    rating: 4.9,
+    costPerDay: 3200,
+    bestMonth: 'Nov - Feb',
+    imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800'
   },
   {
     id: 'dest-3',
-    name: 'Bali & Ubud',
-    country: 'Indonesia',
-    flag: '🇮🇩',
-    tag: 'Tropical Adventure',
+    name: 'Munnar & Alleppey',
+    country: 'Kerala, India',
+    flag: '🇮🇳',
+    tag: 'Backwaters & Tea Hills',
     color: '#059669',
-    rating: 4.7,
-    costPerDay: 55,
-    bestMonth: 'Apr - Sep',
-    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800'
+    rating: 4.9,
+    costPerDay: 2500,
+    bestMonth: 'Sep - Mar',
+    imageUrl: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800'
   },
   {
     id: 'dest-4',
-    name: 'Paris & Provence',
-    country: 'France',
-    flag: '🇫🇷',
-    tag: 'Art & Gourmet',
-    color: '#d97706',
-    rating: 4.9,
-    costPerDay: 160,
-    bestMonth: 'Jun - Sep',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800'
+    name: 'Manali & Ladakh',
+    country: 'Himachal, India',
+    flag: '🇮🇳',
+    tag: 'Snow Peaks & Safari',
+    color: '#2563eb',
+    rating: 4.8,
+    costPerDay: 3500,
+    bestMonth: 'May - Oct',
+    imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800'
+  },
+  {
+    id: 'dest-5',
+    name: 'Dubai & Abu Dhabi',
+    country: 'United Arab Emirates',
+    flag: '🇦🇪',
+    tag: 'Luxury & Desert Safari',
+    color: '#7c3aed',
+    rating: 4.8,
+    costPerDay: 9500,
+    bestMonth: 'Nov - Apr',
+    imageUrl: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800'
   },
 ];
 
@@ -132,7 +144,7 @@ export default function Dashboard({
                   cursor: 'pointer'
                 }}
               >
-                ✨ "5 days adventure in Tokyo"
+                🇮🇳 "7 days Royal Rajasthan tour under ₹45,000"
               </button>
               <button
                 onClick={() => onToggleAiAgent()}
@@ -144,7 +156,19 @@ export default function Dashboard({
                   cursor: 'pointer'
                 }}
               >
-                ✨ "Romantic Paris & Rome trip"
+                🌴 "Goa beach escape & waterfall safari"
+              </button>
+              <button
+                onClick={() => onToggleAiAgent()}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)', borderRadius: '99px',
+                  padding: '6px 14px', fontSize: '12px', fontWeight: 700, color: '#ffffff',
+                  cursor: 'pointer'
+                }}
+              >
+                🍵 "Kerala backwaters & Munnar hills"
               </button>
             </div>
           </div>

@@ -19,16 +19,16 @@ export default function CreateTripModal({
   isOpen,
   onClose,
   onTripCreated,
-  currencySymbol = '$'
+  currencySymbol = '₹'
 }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('2026-09-01');
-  const [endDate, setEndDate] = useState('2026-09-12');
-  const [budgetLimit, setBudgetLimit] = useState('3200');
+  const [startDate, setStartDate] = useState('2026-10-01');
+  const [endDate, setEndDate] = useState('2026-10-08');
+  const [budgetLimit, setBudgetLimit] = useState('45000');
   const [selectedEmoji, setSelectedEmoji] = useState('🗺️');
   const [selectedTheme, setSelectedTheme] = useState(TRIP_THEMES[0]);
-  const [initialCity, setInitialCity] = useState('Paris');
+  const [initialCity, setInitialCity] = useState('Jaipur');
   const [isPublic, setIsPublic] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -46,9 +46,9 @@ export default function CreateTripModal({
     const startingStop = {
       id: `stop-${Date.now()}`,
       city: MOCK_CITIES.find(c => c.name.toLowerCase() === initialCity.toLowerCase()) || {
-        name: initialCity || 'Paris',
-        country: 'Destination',
-        imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800'
+        name: initialCity || 'Jaipur',
+        country: 'India',
+        imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800'
       },
       startDate,
       endDate,
@@ -57,11 +57,11 @@ export default function CreateTripModal({
     };
 
     const payload = {
-      name: name.trim() || `Grand Tour: ${initialCity} & Beyond ${selectedEmoji}`,
-      description: description.trim() || `Exciting ${days}-day multi-city journey focusing on ${selectedTheme?.label || 'Culture & Sights'}.`,
+      name: name.trim() || `Royal Tour: ${initialCity} & Beyond ${selectedEmoji}`,
+      description: description.trim() || `Exciting ${days}-day multi-city journey focusing on ${selectedTheme?.label || 'Heritage & Culture'}.`,
       startDate,
       endDate,
-      budgetLimit: parseFloat(budgetLimit) || 2500,
+      budgetLimit: parseFloat(budgetLimit) || 35000,
       coverPhoto: selectedEmoji,
       isPublic,
       theme: selectedTheme?.label,
