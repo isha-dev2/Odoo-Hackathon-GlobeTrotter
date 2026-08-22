@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import AuthModal from './components/AuthModal';
 import AiAgentDrawer from './components/AiAgentDrawer';
+import CheckoutModal from './components/CheckoutModal';
 import Dashboard from './pages/Dashboard';
 import CreateTripModal from './pages/CreateTripModal';
 import TripList from './pages/TripList';
@@ -30,6 +31,7 @@ export default function App() {
   const [trips, setTrips] = useState(MOCK_TRIPS);
   const [selectedTrip, setSelectedTrip] = useState(MOCK_TRIPS[0]);
   const [publicTrip, setPublicTrip] = useState(MOCK_TRIPS[0]);
+  const [userBookings, setUserBookings] = useState([]);
 
   // Currency & Theme - Defaults to INR (₹)
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -41,6 +43,8 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isAiAgentOpen, setIsAiAgentOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutTarget, setCheckoutTarget] = useState({ trip: null, activity: null });
 
   // Synchronize Tab with URL hash bidirectionally
   useEffect(() => {
@@ -61,24 +65,10 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Fetch live trips and user authentication on mount
+  // Fetch live trips from backend on mount
   useEffect(() => {
-    const initAuthAndData = async () => {
-      const token = localStorage.getItem('globetrotter_token');
-      if (token) {
-        try {
-          const profileRes = await api.get('/auth/me');
-          if (profileRes.data && profileRes.data.user) {
-            setUser(profileRes.data.user);
-          }
-        } catch (err) {
-          console.warn('Auto-authentication failed:', err);
-          localStorage.removeItem('globetrotter_token');
-        }
-      }
-      fetchTrips();
-    };
-    initAuthAndData();
+    fetchTrips();
+    fetchBookings();
   }, []);
 
   const fetchTrips = async () => {
@@ -94,6 +84,17 @@ export default function App() {
     }
   };
 
+  const fetchBookings = async () => {
+    try {
+      const res = await api.get('/payment/bookings');
+      if (res.data && res.data.bookings) {
+        setUserBookings(res.data.bookings);
+      }
+    } catch (err) {
+      // Local fallback
+    }
+  };
+
   const handleUpdateTrip = (updatedTrip) => {
     setTrips((prev) =>
       prev.map((t) => (t.id === updatedTrip.id ? updatedTrip : t))
@@ -103,12 +104,7 @@ export default function App() {
     }
   };
 
-  const handleDeleteTrip = async (tripId) => {
-    try {
-      await api.delete(`/trips/${tripId}`);
-    } catch (err) {
-      console.error('Failed to delete trip on backend:', err);
-    }
+  const handleDeleteTrip = (tripId) => {
     const filtered = trips.filter((t) => t.id !== tripId);
     setTrips(filtered);
     if (selectedTrip?.id === tripId) {
@@ -130,6 +126,15 @@ export default function App() {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+  };
+
+  const handleOpenCheckout = ({ trip, activity }) => {
+    setCheckoutTarget({ trip: trip || selectedTrip, activity });
+    setIsCheckoutOpen(true);
+  };
+
+  const handleBookingSuccess = (newBooking) => {
+    setUserBookings((prev) => [newBooking, ...prev]);
   };
 
   const handleSaveGeneratedAiTrip = (aiPlan) => {
@@ -226,43 +231,26 @@ export default function App() {
             onNavigateToBuilder={() => handleTabChange('builder')}
             currencySymbol={currencySymbol}
             onExportTrip={handleExportTrip}
+            onOpenCheckout={handleOpenCheckout}
           />
         )}
 
         {activeTab === 'cities' && (
           <CityExplorer
-            onAddCityToTrip={async (city) => {
+            onAddCityToTrip={(city) => {
               if (selectedTrip) {
-                try {
-                  const res = await api.post('/stops', {
-                    tripId: selectedTrip.id,
-                    cityId: city.id,
-                    startDate: selectedTrip.startDate,
-                    endDate: selectedTrip.endDate,
-                    order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1
-                  });
-                  if (res.data && res.data.stop) {
-                    const newStop = res.data.stop;
-                    handleUpdateTrip({
-                      ...selectedTrip,
-                      stops: [...(selectedTrip.stops || []), newStop],
-                    });
-                  }
-                } catch (err) {
-                  console.error('Failed to save stop to backend:', err);
-                  const newStop = {
-                    id: `stop-${Date.now()}`,
-                    city,
-                    startDate: selectedTrip.startDate,
-                    endDate: selectedTrip.endDate,
-                    order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1,
-                    activities: [],
-                  };
-                  handleUpdateTrip({
-                    ...selectedTrip,
-                    stops: [...(selectedTrip.stops || []), newStop],
-                  });
-                }
+                const newStop = {
+                  id: `stop-${Date.now()}`,
+                  city,
+                  startDate: selectedTrip.startDate,
+                  endDate: selectedTrip.endDate,
+                  order: (selectedTrip.stops ? selectedTrip.stops.length : 0) + 1,
+                  activities: [],
+                };
+                handleUpdateTrip({
+                  ...selectedTrip,
+                  stops: [...(selectedTrip.stops || []), newStop],
+                });
                 handleTabChange('builder');
               } else {
                 setIsCreateTripOpen(true);
@@ -274,42 +262,22 @@ export default function App() {
 
         {activeTab === 'activities' && (
           <ActivityExplorer
-            onAddActivityToTrip={async (act) => {
+            onAddActivityToTrip={(act) => {
               if (selectedTrip && selectedTrip.stops && selectedTrip.stops.length > 0) {
-                const stopToAddTo = selectedTrip.stops[selectedTrip.stops.length - 1]; // add to most recent stop
-                try {
-                  const res = await api.post('/activities', {
-                    stopId: stopToAddTo.id,
-                    name: act.name,
-                    category: act.category,
-                    cost: parseFloat(act.cost) || 0,
-                    duration: parseInt(act.duration) || null,
-                    description: act.description
-                  });
-                  if (res.data && res.data.activity) {
-                    const newActivity = res.data.activity;
-                    const updatedStops = selectedTrip.stops.map((s) =>
-                      s.id === stopToAddTo.id
-                        ? { ...s, activities: [...(s.activities || []), newActivity] }
-                        : s
-                    );
-                    handleUpdateTrip({ ...selectedTrip, stops: updatedStops });
-                  }
-                } catch (err) {
-                  console.error('Failed to add activity on backend:', err);
-                  const updatedStops = selectedTrip.stops.map((s) =>
-                    s.id === stopToAddTo.id
-                      ? { ...s, activities: [...(s.activities || []), { ...act, id: `act-${Date.now()}` }] }
-                      : s
-                  );
-                  handleUpdateTrip({ ...selectedTrip, stops: updatedStops });
-                }
-                handleTabChange('builder');
+                const updatedStops = [...selectedTrip.stops];
+                const lastStop = updatedStops[updatedStops.length - 1];
+                lastStop.activities = [...(lastStop.activities || []), act];
+                handleUpdateTrip({
+                  ...selectedTrip,
+                  stops: updatedStops,
+                });
+                alert(`Added "${act.name}" to stop: ${lastStop.city?.name || 'Current Stop'}`);
               } else {
                 alert('Please create or select a trip first from the Navbar!');
               }
             }}
             currencySymbol={currencySymbol}
+            onOpenCheckout={handleOpenCheckout}
           />
         )}
 
@@ -340,34 +308,10 @@ export default function App() {
 
         {activeTab === 'share' && (
           <PublicTripView
-            publicTrip={publicTrip || selectedTrip}
-            onCopyTripToAccount={async (tripToCopy) => {
-              if (tripToCopy.shareSlug) {
-                try {
-                  const res = await api.post(`/trips/share/${tripToCopy.shareSlug}/copy`);
-                  if (res.data && res.data.tripId) {
-                    const fetchRes = await api.get('/trips');
-                    if (fetchRes.data && fetchRes.data.trips) {
-                      setTrips(fetchRes.data.trips);
-                      const newlyCopied = fetchRes.data.trips.find(t => t.id === res.data.tripId);
-                      if (newlyCopied) {
-                        setSelectedTrip(newlyCopied);
-                        handleTabChange('builder');
-                        return;
-                      }
-                    }
-                  }
-                } catch (err) {
-                  console.error('Failed to copy public trip on backend:', err);
-                }
-              }
-              const copiedTrip = {
-                ...tripToCopy,
-                id: `copied-${Date.now()}`,
-                name: `Copy of ${tripToCopy.name}`,
-              };
-              setTrips((prev) => [copiedTrip, ...prev]);
-              setSelectedTrip(copiedTrip);
+            trip={publicTrip || selectedTrip}
+            onCloneTrip={(cloned) => {
+              setTrips((prev) => [cloned, ...prev]);
+              setSelectedTrip(cloned);
               handleTabChange('builder');
             }}
             currencySymbol={currencySymbol}
@@ -378,13 +322,12 @@ export default function App() {
           <UserProfile
             user={user}
             trips={trips}
-            currency={currency}
-            setCurrency={setCurrency}
-            onUpdateUser={(u) => setUser(u)}
-            onLogout={() => {
-              localStorage.removeItem('globetrotter_token');
-              setUser(null);
+            onSelectTrip={(t) => {
+              setSelectedTrip(t);
+              handleTabChange('builder');
             }}
+            currencySymbol={currencySymbol}
+            bookings={userBookings}
             onNavigateTab={handleTabChange}
           />
         )}
@@ -397,7 +340,7 @@ export default function App() {
         )}
       </main>
 
-      {/* Modals & AI Agent Drawer */}
+      {/* Modals & Checkout Drawer */}
       <CreateTripModal
         isOpen={isCreateTripOpen}
         onClose={() => setIsCreateTripOpen(false)}
@@ -407,6 +350,16 @@ export default function App() {
           handleTabChange('builder');
         }}
         currencySymbol={currencySymbol}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        trip={checkoutTarget.trip}
+        activity={checkoutTarget.activity}
+        currencySymbol={currencySymbol}
+        user={user}
+        onBookingSuccess={handleBookingSuccess}
       />
 
       <AiAgentDrawer

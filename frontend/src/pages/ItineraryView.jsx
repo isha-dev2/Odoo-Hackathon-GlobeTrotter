@@ -21,7 +21,8 @@ export default function ItineraryView({
   onShareTrip,
   onNavigateToBuilder,
   currencySymbol = '$',
-  onExportTrip
+  onExportTrip,
+  onOpenCheckout
 }) {
   const [completedActs, setCompletedActs] = useState({});
 
@@ -108,6 +109,20 @@ export default function ItineraryView({
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => onOpenCheckout && onOpenCheckout({ trip: currentTrip })}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                color: '#ffffff', borderRadius: '12px', padding: '10px 20px',
+                fontSize: '13px', fontWeight: 900, cursor: 'pointer', border: 'none',
+                boxShadow: '0 4px 16px rgba(16,185,129,0.45)'
+              }}
+            >
+              <CreditCard size={15} />
+              <span>⚡ Book Online</span>
+            </button>
+
             <button
               onClick={() => onShareTrip(currentTrip)}
               style={{

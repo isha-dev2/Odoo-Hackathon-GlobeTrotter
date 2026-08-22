@@ -1,76 +1,42 @@
-# ✈️ GlobeTrotter — Personalized Multi-City Travel Planner
+cat > README.md << 'EOF'
+# 🌍 GlobeTrotter — Empowering Personalized Multi-City Travel Planning
 
-> **Odoo Hackathon 2026 Official Submission**  
-> A modern, high-performance web application designed for seamless multi-city travel planning, route visualization, and budget analytics.
+![GlobeTrotter Banner](https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400)
 
-[![Odoo Hackathon 2026](https://img.shields.io/badge/Odoo_Hackathon-2026_Entry-714B67?style=for-the-badge&logo=odoo&logoColor=white)](https://github.com/isha-dev2/Odoo-Hackathon-GlobeTrotter)
-[![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-
----
-
-## 🌟 Key Features
-
-### 1. 🌆 Multi-City Itinerary Timeline
-- **Interactive Shift Controls**: Move destination cities up or down along your travel sequence.
-- **Stay Night Calculators**: Increment/decrement stay durations with live total cost updates.
-- **Inter-City Transport Badges**: Visual transport connectors displaying flight, train, bus, or car travel mode, duration, and distance.
-- **Custom Experiences**: Add and tag daily activities (Sightseeing, Culinary, Adventure).
-
-### 2. 🗺️ Interactive Route Topology Map
-- **SVG Bezier Flight Paths**: Visual curved flight arcs connecting city destination hubs.
-- **Radar Pulse City Pins**: Glowing destination pins with clickable city detail drawer inspector.
-
-### 3. 📊 Smart Budget & Expenditure Analytics
-- **Live Progress Meter**: Track total estimated trip expenses against target budget limits.
-- **Category Cost Breakdown**: Sub-totals for Accommodation, Transport, and Daily Meals/Excursions.
-- **Multi-Currency Converter**: Instant switching between **$ USD**, **€ EUR**, **£ GBP**, and **₹ INR**.
-
-### 4. 🎨 Signature Ocean Teal & Sunset Orange Dual Theme
-- **Dual Mode**: Seamless toggle between **☀️ White (Light)** and **🌙 Black (Dark)** modes.
-- **Modern Typography**: Powered by Google Fonts (`Outfit` & `Plus Jakarta Sans`).
+> **Odoo Hackathon 2026 Submission**  
+> An intelligent, collaborative, end-to-end multi-city travel planning platform combining GIS interactive mapping, day-wise master itineraries, live financial budget intelligence, and AI-assisted journey synthesis.
 
 ---
 
-## 🛠️ Tech Stack
+## 🎯 Problem Statement & Core Mission
+Planning multi-city journeys is traditionally chaotic and fragmented across disjointed spreadsheets, map bookmarks, currency converters, and travel guides. 
 
-- **Frontend Core**: React 19 + Vite 6
-- **Backend API**: Express + Prisma ORM + PostgreSQL
-- **Styling**: Custom CSS Design System with CSS Variables & Glassmorphism
-- **Iconography**: Lucide React Icons
-- **Celebrations**: Canvas Confetti
-
----
-
-## 🚀 Quick Start Guide
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm
-
-### Installation & Local Run
-```bash
-# 1. Clone the repository
-git clone https://github.com/isha-dev2/Odoo-Hackathon-GlobeTrotter.git
-cd Odoo-Hackathon-GlobeTrotter
-
-# 2. Install dependencies
-npm install
-
-# 3. Start the local dev server
-npm run dev
-```
-
-Open `http://localhost:5173/` in your browser to test the live web app!
-
-### Production Build
-```bash
-npm run build
-```
+**GlobeTrotter** solves this by delivering an integrated, intuitive, and responsive workspace allowing travelers to:
+* 🗺️ **Design Multi-City Topologies**: Add, remove, and seamlessly reorder destinations with automatic transit estimations.
+* 📍 **GIS Real-World World Map API**: Visualize global and Indian routes using OpenStreetMap, CartoDB Voyager, and Satellite layers with GPS coordinates.
+* 💰 **Financial Budget Intelligence**: Multi-segment progress meters with category breakdown (Stays, Transport, Activities, Dining) and instant over-budget alerts.
+* 💱 **Multi-Currency Engine**: Default **₹ INR (Indian Rupee)** with instant real-time conversion to **$ USD**, **€ EUR**, **£ GBP**, and **¥ JPY**.
+* 💳 **Online Booking & Instant Payments**: Integrated checkout supporting UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, and NetBanking with automated GST invoice generation.
+* 🤖 **AI Smart Travel Agent**: Natural language itinerary generation tailored for budget limits and durations.
+* 👥 **Collaborative & Shareable**: Live online planner tickers, shareable public links, and 1-click **"Clone / Copy Trip"** functionality.
 
 ---
 
-## 👥 Submission Info
-- **Project**: GlobeTrotter Multi-City Travel Planner
-- **Repository**: [github.com/isha-dev2/Odoo-Hackathon-GlobeTrotter](https://github.com/isha-dev2/Odoo-Hackathon-GlobeTrotter)
-- **Event**: Odoo Hackathon 2026
+## 🚀 Key Feature Matrix
+
+| Feature Module | Description & Capabilities |
+|---|---|
+| 📊 **Clean Executive Dashboard** | Live stats, active trip preview cards, quick tool launchers, and trending destination spotlights. |
+| 💳 **Online Booking & Payments** | Instant multi-channel checkout (UPI, Cards, NetBanking), promo codes, QR passes, and downloadable GST receipts. |
+| 🛠️ **Interactive Trip Builder** | Drag & reorder stops, instant popular city presets (+ Jaipur, + Goa, + Kerala, + Dubai), and live budget totals. |
+| 📋 **Master Itinerary Guide** | Day-by-day journey flow with category badges, duration chips, transit connectors, and checklist tracking. |
+| 🗺️ **GIS Interactive World Map** | Real-world Leaflet vector tiles, GPS coordinates, interactive numbered pins, and animated flight paths. |
+| 📅 **Visual Timeline & Calendar** | Dual-mode schedule visualizer (Vertical Day Flow with simulated weather + Monthly Interactive Calendar Grid). |
+| 💰 **Budget & Expense Analyzer** | Stacked visual expense breakdown with daily burn rate calculations and overdraft warnings. |
+| 🏙️ **City & Activity Explorers** | Filterable catalogs across Indian and global destinations with 1-click "Add to Itinerary" and "Book Now". |
+| 🔗 **Community & Public Showcase** | Public read-only itinerary viewing with direct URL copy and 1-click account cloning. |
+| 🛡️ **Admin & Platform Telemetry** | Active travelers monitor, GMV gross revenue counters, and database connection health. |
+
+---
+
+## 🏗️ System Architecture & Tech Stack
