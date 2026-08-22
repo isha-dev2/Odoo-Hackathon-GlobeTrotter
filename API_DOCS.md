@@ -113,3 +113,55 @@ Platform metrics: Total Users, Total Trips, Catalog Destinations, and Spend Volu
 
 ### `GET /admin/health`
 PostgreSQL database connection pool and Prisma ORM latency monitor.
+
+---
+
+## 7. Online Booking & Payment Gateway
+
+### `POST /payment/create-order`
+Initiates a payment order with 5% GST calculation and promo discount.
+* **Payload**:
+```json
+{
+  "tripId": "trip-1",
+  "amount": 45000,
+  "currency": "INR",
+  "itemName": "Royal Rajasthan Multi-City Heritage Package",
+  "travelerName": "Aarav Sharma",
+  "travelerEmail": "traveler@globetrotter.in"
+}
+```
+* **Response `201 Created`**:
+```json
+{
+  "success": true,
+  "order": {
+    "orderId": "order_78a8f192b1",
+    "amount": 47250,
+    "baseAmount": 45000,
+    "gstAmount": 2250,
+    "currency": "INR",
+    "status": "CREATED"
+  }
+}
+```
+
+### `POST /payment/verify-payment`
+Verifies payment signature / simulation and records confirmed booking.
+* **Payload**:
+```json
+{
+  "orderId": "order_78a8f192b1",
+  "paymentMethod": "UPI",
+  "amount": 47250,
+  "currency": "INR",
+  "itemName": "Royal Rajasthan Multi-City Heritage Package"
+}
+```
+* **Response `200 OK`**: Returns confirmed `Booking` with reference code and QR entry pass data.
+
+### `GET /payment/bookings`
+Retrieves traveler's confirmed bookings history.
+
+### `GET /payment/invoice/:bookingRef`
+Fetches complete tax invoice breakdown with itemized services and CGST/SGST taxes.
