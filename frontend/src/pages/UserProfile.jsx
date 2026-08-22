@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
   User, Mail, Globe, Heart, Shield, LogOut,
-  Save, Check, MapPin, Compass, Sparkles, Award
+  Save, Check, MapPin, Compass, Sparkles, Award,
+  CreditCard, Download, CheckCircle2, QrCode, FileText
 } from 'lucide-react';
+import { downloadInvoice } from '../utils/invoiceGenerator';
 
 export default function UserProfile({
   user,
@@ -11,23 +13,42 @@ export default function UserProfile({
   setCurrency,
   onUpdateUser,
   onLogout,
-  onNavigateTab
+  onNavigateTab,
+  bookings = [],
+  currencySymbol = '₹'
 }) {
-  const [name, setName] = useState(user?.name || 'Alex Johnson');
-  const [email, setEmail] = useState(user?.email || 'alex.traveler@example.com');
-  const [bio, setBio] = useState('Passionate global nomad, architecture enthusiast, and coffee hunter exploring cultural gems across Europe and Asia.');
-  const [travelStyle, setTravelStyle] = useState(['Cultural & Heritage', 'Food & Wine', 'Boutique & Scenic']);
+  const [name, setName] = useState(user?.name || 'Aarav Sharma');
+  const [email, setEmail] = useState(user?.email || 'aarav.sharma@odoo-hackathon.in');
+  const [bio, setBio] = useState('Passionate traveler, heritage lover, and culinary enthusiast exploring cultural gems across India and global cities.');
+  const [travelStyle, setTravelStyle] = useState(['Royal Heritage', 'Backwaters & Nature', 'Beach Getaway', 'Culinary Tours']);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  // Sample default confirmed bookings if none yet
+  const defaultBookings = bookings.length > 0 ? bookings : [
+    {
+      id: 'bk-sample-1',
+      bookingRef: 'GT-BK-892145',
+      transactionId: 'txn_9824fha91823',
+      itemName: 'Royal Rajasthan Multi-City Heritage Package',
+      amount: 45000,
+      currency: 'INR',
+      paymentMethod: 'UPI (Google Pay)',
+      travelerName: name,
+      travelerEmail: email,
+      bookedAt: '2026-08-20T10:30:00Z',
+      status: 'CONFIRMED'
+    }
+  ];
+
   const wishlistCities = [
-    { name: 'Reykjavik', country: 'Iceland', flag: '🇮🇸', tag: 'Northern Lights' },
-    { name: 'Cape Town', country: 'South Africa', flag: '🇿🇦', tag: 'Safari & Ocean' },
-    { name: 'Kyoto', country: 'Japan', flag: '🇯🇵', tag: 'Ancient Shrines' },
+    { name: 'Munnar & Alleppey', country: 'Kerala, India', flag: '🇮🇳', tag: 'Tea Hills & Houseboats' },
+    { name: 'Dubai & Abu Dhabi', country: 'UAE', flag: '🇦🇪', tag: 'Desert Safari & Luxury' },
+    { name: 'Manali & Ladakh', country: 'Himachal, India', flag: '🇮🇳', tag: 'Snow Peaks & Paragliding' },
   ];
 
   const handleSave = (e) => {
     e.preventDefault();
-    onUpdateUser({ ...user, name, email, bio });
+    if (onUpdateUser) onUpdateUser({ ...user, name, email, bio });
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 2500);
   };
@@ -51,109 +72,145 @@ export default function UserProfile({
             fontSize: '28px', fontWeight: 900, color: '#ffffff',
             boxShadow: '0 8px 24px rgba(13,148,136,0.4)'
           }}>
-            {name[0]?.toUpperCase() || 'U'}
+            {name[0]?.toUpperCase() || 'A'}
           </div>
 
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
               {name}
             </h1>
-            <div style={{ fontSize: '13px', color: '#cbd5e1', marginTop: '4px' }}>
-              {email} · GlobeTrotter Explorer Member
-            </div>
+            <p style={{ fontSize: '13px', color: '#cbd5e1', margin: '4px 0 0' }}>
+              {email} · Verified Traveler · Odoo Hackathon Participant
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Profile Form + Stats & Wishlist */}
+      {/* Confirmed Online Bookings & GST Invoices Section */}
+      <div style={{
+        background: '#ffffff', borderRadius: '24px', padding: '28px',
+        border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '38px', height: '38px', borderRadius: '12px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
+              <CreditCard size={20} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', margin: 0 }}>
+                My Confirmed Bookings & Invoices ({defaultBookings.length})
+              </h3>
+              <p style={{ fontSize: '12px', color: '#64748b', margin: '2px 0 0' }}>
+                Instant travel vouchers, payment transaction IDs, and downloadable GST tax receipts
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {defaultBookings.map(bk => (
+            <div
+              key={bk.bookingRef || bk.id}
+              style={{
+                background: '#f8fafc', borderRadius: '16px', padding: '18px 22px',
+                border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px'
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#0f172a' }}>{bk.itemName}</span>
+                  <span style={{ fontSize: '10px', fontWeight: 800, background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '99px' }}>
+                    ● CONFIRMED
+                  </span>
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                  Ref: <strong style={{ color: '#0d9488' }}>{bk.bookingRef}</strong> · Method: {bk.paymentMethod} · Txn: <code>{bk.transactionId}</code>
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: 900, color: '#0f172a', marginTop: '6px' }}>
+                  Amount Paid: <span style={{ color: '#0d9488' }}>{currencySymbol}{bk.amount?.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => downloadInvoice(bk)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  background: '#ffffff', border: '1.5px solid #cbd5e1',
+                  borderRadius: '12px', padding: '9px 16px',
+                  fontSize: '12px', fontWeight: 800, color: '#0f172a',
+                  cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+                }}
+              >
+                <Download size={14} color="#0d9488" />
+                <span>Download Tax Invoice</span>
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Grid: Profile Settings + Travel Passport */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
         
-        {/* Left: Profile Settings Form */}
+        {/* Left: Profile Form */}
         <div style={{
           background: '#ffffff', borderRadius: '24px', padding: '28px',
           border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
         }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', margin: '0 0 20px' }}>
-            Account & Travel Profile
-          </h2>
+          <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#0f172a', margin: '0 0 18px' }}>
+            Profile Settings
+          </h3>
 
           <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Full Name</label>
+              <label style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '6px' }}>FULL NAME</label>
               <input
+                type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 600, outline: 'none' }}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: '#0f172a', outline: 'none' }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Email Address</label>
+              <label style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '6px' }}>EMAIL ADDRESS</label>
               <input
+                type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 600, outline: 'none' }}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: '#0f172a', outline: 'none' }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Traveler Bio</label>
+              <label style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', display: 'block', marginBottom: '6px' }}>BIO & TRAVEL GOALS</label>
               <textarea
                 rows={3}
                 value={bio}
                 onChange={e => setBio(e.target.value)}
-                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 500, outline: 'none', resize: 'none' }}
+                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: '#0f172a', outline: 'none', resize: 'none' }}
               />
             </div>
 
-            <div>
-              <label style={{ fontSize: '12px', fontWeight: 800, color: '#475569', display: 'block', marginBottom: '6px' }}>Preferred Currency</label>
-              <select
-                value={currency}
-                onChange={e => setCurrency(e.target.value)}
-                style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', borderRadius: '12px', padding: '10px 14px', fontSize: '13px', color: '#0f172a', fontWeight: 700, outline: 'none' }}
-              >
-                <option value="USD">USD ($) — US Dollar</option>
-                <option value="EUR">EUR (€) — Euro</option>
-                <option value="GBP">GBP (£) — British Pound</option>
-                <option value="JPY">JPY (¥) — Japanese Yen</option>
-                <option value="INR">INR (₹) — Indian Rupee</option>
-              </select>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
               <button
                 type="submit"
                 style={{
                   flex: 1, padding: '12px', borderRadius: '12px',
-                  background: savedSuccess ? '#10b981' : 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
-                  color: '#ffffff', border: 'none', fontSize: '13px', fontWeight: 800, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                  boxShadow: '0 4px 14px rgba(13,148,136,0.3)'
+                  background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
+                  color: '#ffffff', border: 'none', fontSize: '13px', fontWeight: 800,
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}
               >
-                {savedSuccess ? <Check size={16} strokeWidth={3} /> : <Save size={16} />}
-                <span>{savedSuccess ? 'Profile Updated!' : 'Save Changes'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={onLogout}
-                style={{
-                  padding: '12px 18px', borderRadius: '12px',
-                  border: '1.5px solid #fecaca', background: '#fff5f5',
-                  color: '#ef4444', fontSize: '13px', fontWeight: 800, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '6px'
-                }}
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
+                {savedSuccess ? <Check size={16} /> : <Save size={16} />}
+                <span>{savedSuccess ? 'Saved Successfully!' : 'Save Profile Changes'}</span>
               </button>
             </div>
           </form>
         </div>
 
-        {/* Right: Travel Passport Stats & Saved Wishlist */}
+        {/* Right: Travel Passport Achievements & Wishlist */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           {/* Stats Passport */}
@@ -176,7 +233,7 @@ export default function UserProfile({
               </div>
               <div style={{ background: '#eff6ff', padding: '16px', borderRadius: '16px', textAlign: 'center', border: '1px solid #bfdbfe' }}>
                 <div style={{ fontSize: '24px', fontWeight: 900, color: '#2563eb' }}>4</div>
-                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>Passports Stamps</div>
+                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginTop: '2px' }}>Passport Stamps</div>
               </div>
             </div>
           </div>
@@ -191,7 +248,7 @@ export default function UserProfile({
                 Saved Destination Wishlist
               </h3>
               <button
-                onClick={() => onNavigateTab('cities')}
+                onClick={() => onNavigateTab && onNavigateTab('cities')}
                 style={{ fontSize: '12px', fontWeight: 800, color: '#0d9488', background: 'none', border: 'none', cursor: 'pointer' }}
               >
                 + Browse More
@@ -216,7 +273,7 @@ export default function UserProfile({
                   </div>
 
                   <button
-                    onClick={() => onNavigateTab('cities')}
+                    onClick={() => onNavigateTab && onNavigateTab('cities')}
                     style={{
                       background: '#f0fdf9', border: '1px solid #a7f3d0', borderRadius: '8px',
                       padding: '6px 12px', fontSize: '11px', fontWeight: 800, color: '#0f766e', cursor: 'pointer'

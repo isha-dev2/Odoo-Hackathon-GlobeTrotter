@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import AuthModal from './components/AuthModal';
 import AiAgentDrawer from './components/AiAgentDrawer';
+import CheckoutModal from './components/CheckoutModal';
 import Dashboard from './pages/Dashboard';
 import CreateTripModal from './pages/CreateTripModal';
 import TripList from './pages/TripList';
@@ -30,6 +31,7 @@ export default function App() {
   const [trips, setTrips] = useState(MOCK_TRIPS);
   const [selectedTrip, setSelectedTrip] = useState(MOCK_TRIPS[0]);
   const [publicTrip, setPublicTrip] = useState(MOCK_TRIPS[0]);
+  const [userBookings, setUserBookings] = useState([]);
 
   // Currency & Theme - Defaults to INR (₹)
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -41,6 +43,8 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isAiAgentOpen, setIsAiAgentOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutTarget, setCheckoutTarget] = useState({ trip: null, activity: null });
 
   // Synchronize Tab with URL hash bidirectionally
   useEffect(() => {
@@ -64,6 +68,7 @@ export default function App() {
   // Fetch live trips from backend on mount
   useEffect(() => {
     fetchTrips();
+    fetchBookings();
   }, []);
 
   const fetchTrips = async () => {
@@ -76,6 +81,17 @@ export default function App() {
       }
     } catch (err) {
       console.log('Using pre-populated Indian & global trip templates:', err.message);
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const res = await api.get('/payment/bookings');
+      if (res.data && res.data.bookings) {
+        setUserBookings(res.data.bookings);
+      }
+    } catch (err) {
+      // Local fallback
     }
   };
 
@@ -110,6 +126,15 @@ export default function App() {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+  };
+
+  const handleOpenCheckout = ({ trip, activity }) => {
+    setCheckoutTarget({ trip: trip || selectedTrip, activity });
+    setIsCheckoutOpen(true);
+  };
+
+  const handleBookingSuccess = (newBooking) => {
+    setUserBookings((prev) => [newBooking, ...prev]);
   };
 
   const handleSaveGeneratedAiTrip = (aiPlan) => {
@@ -206,6 +231,7 @@ export default function App() {
             onNavigateToBuilder={() => handleTabChange('builder')}
             currencySymbol={currencySymbol}
             onExportTrip={handleExportTrip}
+            onOpenCheckout={handleOpenCheckout}
           />
         )}
 
@@ -251,6 +277,7 @@ export default function App() {
               }
             }}
             currencySymbol={currencySymbol}
+            onOpenCheckout={handleOpenCheckout}
           />
         )}
 
@@ -300,6 +327,8 @@ export default function App() {
               handleTabChange('builder');
             }}
             currencySymbol={currencySymbol}
+            bookings={userBookings}
+            onNavigateTab={handleTabChange}
           />
         )}
 
@@ -311,7 +340,7 @@ export default function App() {
         )}
       </main>
 
-      {/* Modals & AI Agent Drawer */}
+      {/* Modals & Checkout Drawer */}
       <CreateTripModal
         isOpen={isCreateTripOpen}
         onClose={() => setIsCreateTripOpen(false)}
@@ -321,6 +350,16 @@ export default function App() {
           handleTabChange('builder');
         }}
         currencySymbol={currencySymbol}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        trip={checkoutTarget.trip}
+        activity={checkoutTarget.activity}
+        currencySymbol={currencySymbol}
+        user={user}
+        onBookingSuccess={handleBookingSuccess}
       />
 
       <AiAgentDrawer

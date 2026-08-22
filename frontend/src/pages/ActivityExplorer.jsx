@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import {
   Search, Filter, Plus, Clock, DollarSign, Star,
-  Compass, Check, Tag, Sparkles, MapPin
+  Compass, Check, Tag, Sparkles, MapPin, CreditCard
 } from 'lucide-react';
 import { MOCK_ACTIVITIES } from '../api/client';
 
 const CATEGORIES = ['All', 'Sightseeing', 'Food', 'Adventure', 'Culture', 'Nightlife'];
 
-export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol = '₹' }) {
+export default function ActivityExplorer({
+  onAddActivityToTrip,
+  currencySymbol = '₹',
+  onOpenCheckout
+}) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [maxPrice, setMaxPrice] = useState(10000);
@@ -184,30 +188,49 @@ export default function ActivityExplorer({ onAddActivityToTrip, currencySymbol =
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleAdd(act)}
-                  style={{
-                    width: '100%', padding: '12px', borderRadius: '14px',
-                    background: isAdded ? '#10b981' : 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
-                    color: '#ffffff', border: 'none',
-                    fontSize: '13px', fontWeight: 800, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                    boxShadow: '0 4px 14px rgba(13,148,136,0.3)'
-                  }}
-                >
-                  {isAdded ? (
-                    <>
-                      <Check size={16} strokeWidth={3} />
-                      <span>Added to Trip Stop!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus size={16} strokeWidth={2.5} />
-                      <span>Add to Itinerary Stop</span>
-                    </>
-                  )}
-                </button>
+                {/* Actions: Add to stop & Instant Online Book */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(act)}
+                    style={{
+                      flex: 1, padding: '12px', borderRadius: '14px',
+                      background: isAdded ? '#10b981' : '#f0fdf9',
+                      color: isAdded ? '#ffffff' : '#0f766e',
+                      border: '1.5px solid #a7f3d0',
+                      fontSize: '12px', fontWeight: 800, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                    }}
+                  >
+                    {isAdded ? (
+                      <>
+                        <Check size={15} strokeWidth={3} />
+                        <span>Added!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={15} strokeWidth={2.5} />
+                        <span>Add to Stop</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onOpenCheckout && onOpenCheckout({ activity: act })}
+                    style={{
+                      padding: '12px 16px', borderRadius: '14px',
+                      background: 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)',
+                      color: '#ffffff', border: 'none',
+                      fontSize: '12px', fontWeight: 800, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                      boxShadow: '0 4px 12px rgba(13,148,136,0.3)'
+                    }}
+                  >
+                    <CreditCard size={14} />
+                    <span>Book Now</span>
+                  </button>
+                </div>
               </div>
             </div>
           );
